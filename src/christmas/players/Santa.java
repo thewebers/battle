@@ -16,11 +16,13 @@ public class Santa implements Player {
                             // of 1% to 100% according to their drunkeness given by Santa
 
     private Game game;
-    private Player opponent;
 
-    public Santa(Game game, Player opponent) {
+    public Santa(Game game) {
         this.game = game;
-        this.opponent = opponent;
+    }
+
+    private Player getOpponent() {
+        return game.player;
     }
 
     // Everything Santa says is drunk text. Make the drunkenness random (Drunkness Translator, written by Ben)
@@ -29,7 +31,7 @@ public class Santa implements Player {
     public void attack() {
         // TODO:
         // questionable gift - "it doesn't quite look right, but he says it was on your Christmas list" targeted to each
-        // opponent. 50% chance of being a gift that
+        // player. 50% chance of being a gift that
         // person genuinely wants and increases their stamina, health, or whatever. 25% chance of whiskey. 20%, it's
         // like a bomb, poison, or some shit. 4% coal. 1% it's vomit.
     }
