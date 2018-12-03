@@ -5,16 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/christmas/Game.java" line="184" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca4201cb-a19d-46db-b25a-1431d8755384" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/christmas/Action.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/christmas/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/christmas/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/christmas/players/Santa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/christmas/players/Santa.java" afterDir="false" />
-    </list>
+    <list default="true" id="ca4201cb-a19d-46db-b25a-1431d8755384" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,8 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/christmas/Game.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="58" column="37" lean-forward="true" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+            <state relative-caret-position="280">
+              <caret line="65" column="38" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#5174#5175#0" expanded="true" />
@@ -215,7 +206,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1455" height="935" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.34767026" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -226,7 +216,7 @@
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.32998884" />
       <window_info anchor="bottom" id="Run" order="3" weight="0.32998884" />
-      <window_info active="true" anchor="bottom" id="Debug" order="4" visible="true" weight="0.46074647" />
+      <window_info anchor="bottom" id="Debug" order="4" weight="0.46074647" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" />
@@ -333,8 +323,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/christmas/Game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="58" column="37" lean-forward="true" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+        <state relative-caret-position="280">
+          <caret line="65" column="38" selection-start-line="65" selection-start-column="38" selection-end-line="65" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#5174#5175#0" expanded="true" />
