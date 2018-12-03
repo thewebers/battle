@@ -5,9 +5,10 @@ import random
 from enum import Enum
 
 from players.santa import Santa
+from sprites.santasprite import SantaSprite
 
-WIDTH = 360
-HEIGHT = 480
+WIDTH = 20
+HEIGHT = 35
 FPS = 30
 
 # Define Colors 
@@ -25,12 +26,26 @@ class UserActions(Enum):
 
 class GameEngine:
     '''Handles all game logic and interfaces with UI via pygame.'''
-    def __init__(self, w=WIDTH, h=HEIGHT):
-        self.santa = Santa(w//2, h//2)
+    def __init__(self, block_width=WIDTH, block_height=HEIGHT, pixel_to_block_ratio=25):
+
+        assert block_height > block_width >= 10
+
+        # Dimensions
+        self.pixel_to_block_ratio = pixel_to_block_ratio
+        self.bwidth = block_width
+        self.bheight = block_height
+        self.pwidth = block_width * self.pixel_to_block_ratio 
+        self.pheight= block_height * self.pixel_to_block_ratio 
+
+        # Players
+        self.santa = Santa(self.bwidth//2, self.bheight//2)
         self.mortal = None
         self.player = self.santa
 
+        self.timer = 0
+
     def start(self):
+        '''Let the sin... begin.'''
         self.init()
         self.loop()
 
@@ -38,7 +53,7 @@ class GameEngine:
         ## initialize pg and create window
         pg.init()
         pg.mixer.init()  ## For sound
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pg.display.set_mode((self.pwidth, self.pheight))
         pg.display.set_caption("Another Ordinary Weber Christmas")
         self.clock = pg.time.Clock()     ## For syncing the FPS
 
@@ -74,29 +89,40 @@ class GameEngine:
                     running = False
                 self.process_event(event)        
 
+            print(self.timer)
+
             #2 Update
             self.all_sprites.update()
 
             #3 Draw/render
             self.screen.fill(WHITE)
 
-            myfont = pg.font.SysFont("Comic Sans MS", 30)
-            # apply it to text on a label
-            label = myfont.render("beneth sucketh cocketh", 1, BLACK)
-            # put the label object on the self.screen at point x=100, y=100
-            self.screen.blit(label, (20, 100))
+            # myfont = pg.font.SysFont("Comic Sans MS", 30)
+            # # apply it to text on a label
+            # label = myfont.render("teeny weeny in ben's tummy", 1, BLACK)
+            # # put the label object on the self.screen at point x=100, y=100
+            # self.screen.blit(label, (20, 100))
 
             self.all_sprites.draw(self.screen)
-
-            for point in range(0,641,64): # range(start, stop, step)
-                pg.draw.line(self.screen, (255,0,255), (0,0), (480, point), 1)
 
             ########################
             ### Your code comes here
             ########################
             # TODO: Draw all the sprites, mothafucka 
 
+            x, y = (self.player.x * self.pixel_to_block_ratio, self.player.y * self.pixel_to_block_ratio)
+            santa = SantaSprite()
+
+            surface = santa.get_surface()
+            
+            self.screen.blit(surface, (x, y))
+
+            #pg.draw.line(self.screen, (255,0,255), (0,0), (self.player.x * self.pixel_to_block_ratio, self.player.y * self.pixel_to_block_ratio), 1)
+            #pg.draw.rect(self.screen, RED, (x, y, self.pixel_to_block_ratio, self.pixel_to_block_ratio))
+
             ## Done after drawing everything to the self.screen
             pg.display.flip()       
+
+            self.timer += 1
 
         pg.quit()
