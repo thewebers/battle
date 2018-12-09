@@ -95,7 +95,7 @@ class GameEngine:
             self.all_sprites.update()
 
             #3 Draw/render
-            self.screen.fill(WHITE)
+            # self.screen.fill(WHITE)
 
             # myfont = pg.font.SysFont("Comic Sans MS", 30)
             # # apply it to text on a label
@@ -111,14 +111,14 @@ class GameEngine:
             # TODO: Draw all the sprites, mothafucka 
 
             x, y = (self.player.x * self.pixel_to_block_ratio, self.player.y * self.pixel_to_block_ratio)
-            santa = SantaSprite()
-
-            surface = santa.get_surface()
+            santa_sprite = SantaSprite()
+            self.santa.attach(santa_sprite)
+            surface = santa_sprite.get_surface()
             
-            self.screen.blit(surface, (x, y))
+            # self.screen.blit(surface, (x, y))
 
             #pg.draw.line(self.screen, (255,0,255), (0,0), (self.player.x * self.pixel_to_block_ratio, self.player.y * self.pixel_to_block_ratio), 1)
-            #pg.draw.rect(self.screen, RED, (x, y, self.pixel_to_block_ratio, self.pixel_to_block_ratio))
+            pg.draw.ellipse(self.screen, RED, (x, y, self.pixel_to_block_ratio, self.pixel_to_block_ratio))
 
             ## Done after drawing everything to the self.screen
             pg.display.flip()       
