@@ -5,10 +5,10 @@ from .player import Player
 
 class Benjamin(Player):
 
-    images = list(map(pg.image.load, ['res/santa_1.bmp', 'res/santa_2.bmp']))
+    img_locs = ['res/gingerbread-man.png']
 
     def __init__(self, x, y, region, is_turn=False):
-        Player.__init__(self, x, y, self.images, bounded_region=region, is_turn=is_turn)
+        Player.__init__(self, x, y, self.img_locs, bounded_region=region, is_turn=is_turn)
 
     def update(self, pressed_keys):
         Player.update(self, pressed_keys)

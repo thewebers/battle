@@ -1,4 +1,3 @@
-
 import pygame as pg
 
 from .player import Player
@@ -7,10 +6,10 @@ from .player import Player
 
 class Santa(Player):
 
-    images = list(map(pg.image.load, ['res/santa_1.bmp', 'res/santa_2.bmp']))
+    img_locs = ['res/santa-claus.png']
 
     def __init__(self, x, y, region, is_turn=False):
-        Player.__init__(self, x, y, self.images, bounded_region=region, is_turn=is_turn)
+        Player.__init__(self, x, y, self.img_locs, bounded_region=region, is_turn=is_turn)
         print('Santa, created')
 
     def update(self, pressed_keys):
