@@ -4,7 +4,6 @@ import pygame as pg
 from .player import Player
 
 class Benjamin(Player):
-
     img_locs = ['res/gingerbread-man.png']
 
     def __init__(self, x, y, region, is_turn=False):

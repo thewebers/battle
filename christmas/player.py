@@ -13,23 +13,22 @@ class Player(pg.sprite.Sprite):
         self.image = self.images[self.img_idx]
         self.rect = self.image.get_rect(center=(x, y))
 
-        # Constraints.
+        # Constraints
         self.bounded_region = bounded_region
         self.is_turn = is_turn
 
-        # Status fields.
+        # Status Fields
         self.health = 100
         self.power = 0
         self.xp = 0
 
-        # Kinematic quantities.
+        # Kinematic Quantities
         self.x = x
         self.y = y
         self.xv = 0.0
         self.yv = 0.0
 
     def update(self, pressed_keys):
-
         # TODO: Remove after debugging.
         if pressed_keys[K_s]:
             self.is_turn = not self.is_turn
