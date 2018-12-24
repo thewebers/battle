@@ -9,6 +9,9 @@ class Entity(pg.sprite.Sprite):
         self.y = y
 
     @staticmethod
-    def load_images(img_locs):
+    def load_images(img_locs, scale_2x=False):
         """Loads and scales the images found in `img_locs`."""
-        return [pg.image.load(img_loc) for img_loc in img_locs]
+        images = [pg.image.load(img_loc) for img_loc in img_locs]
+        if scale_2x:
+            images = [pg.transform.scale2x(img) for img in images]
+        return images
