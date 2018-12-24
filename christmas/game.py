@@ -13,10 +13,18 @@ FPS = 30
 WHITE = (255, 255, 255)
 LIGHT_GRAY = (200, 200, 200)
 GRAY = (100, 100, 100)
+DARK_GRAY = (50, 50, 50)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+
+
+class DrawRect(pg.Rect):
+    """PyGame `Rect` that can be drawn."""
+    def draw(self, screen, color):
+        pg.draw.rect(screen, color, self)
+
 
 class Game:
     """Handles all game logic and interfaces with UI via pygame."""
@@ -44,68 +52,74 @@ class Game:
         self.gamefont = pg.font.SysFont('Consolas', 16)
         self.clock = pg.time.Clock()
 
-        # Compute player regions and start positions.
-        weber_region = ((0, 0), (self.width, self.height / 2))             # top half.
-        santa_region = ((0, self.height / 2), (self.width, self.height))   # bottom half.
-        weber_pos = ((weber_region[1][0] + weber_region[0][0]) / 2, (weber_region[1][1] + weber_region[0][1]) / 2)
-        santa_pos = ((santa_region[1][0] + santa_region[0][0]) / 2, (santa_region[1][1] + santa_region[0][1]) / 2)
-
-        # TODO: Make loading menu.
+        # Compute player/dialog regions.
+        DIALOG_HEIGHT = 100
+        DIALOG_TOP = (self.height - DIALOG_HEIGHT) / 2
+        DIALOG_BOTTOM = DIALOG_TOP + DIALOG_HEIGHT
+        self.top_region = DrawRect(0, 0, self.width, DIALOG_TOP)
+        self.middle_region = DrawRect(0, DIALOG_TOP, self.width, DIALOG_HEIGHT)
+        self.bottom_region = DrawRect(0, DIALOG_BOTTOM, self.width, self.height - DIALOG_TOP)
 
         # Initialize players.
         self.groups = {
             'all': pg.sprite.RenderUpdates(),
         }
         Player.groups = self.groups['all']
-        self.santa = Santa(santa_pos[0], santa_pos[1], santa_region, is_turn=True)
-        self.weber = Benjamin(weber_pos[0], weber_pos[1], weber_region)
-        self.current = self.santa
+        weber_x, weber_y = self.top_region.center
+        self.weber = Benjamin(weber_x, weber_y, self.top_region, is_turn=False)
+        santa_x, santa_y = self.bottom_region.center
+        self.santa = Santa(santa_x, santa_y, self.bottom_region, is_turn=True)
 
-    def dialog(self, msg):
+    def draw_dialog(self, msg):
         """Draw dialog component in the middle of screen."""
-        dialog_padding = 40
+        PADDING = 40
+        # TODO: Maybe couple the rendering of regions with the regions that
+        # confine the players.  Make a `Region` class?
+        # TODO: Reconcile between the different coordinate systems being used
+        # by rendering and the game world (i.e., y-axes being reversed).
+
+        # Render dialog prompt (but don't blit it yet).
         dialog = self.gamefont.render(msg.upper(), 1, BLACK)
         dialog_rect = dialog.get_rect(center=(self.width / 2, self.height / 2))
-        print(dialog_rect)
-        # Draw.
-        pg.draw.rect(self.screen, LIGHT_GRAY, (0, dialog_rect.top - dialog_padding, self.width, dialog_rect.bottom + dialog_padding))
+        # Draw regions.
+        self.top_region.draw(self.screen, WHITE)
+        self.middle_region.draw(self.screen, LIGHT_GRAY)
+        self.bottom_region.draw(self.screen, DARK_GRAY)
+        # Blit dialog at the end, so it's not overwritten by blitting the region rects.
         self.screen.blit(dialog, dialog_rect)
 
-    def stats(self):
-        """Display player stats."""
+    def draw_stats(self, player, is_top_player):
+        PADDING = 5
+        if is_top_player:
+            draw_color = DARK_GRAY
+            pos_args = [
+                lambda _: { 'bottomright': (player.pos_bounds.w - PADDING, player.pos_bounds.h - PADDING) },
+                lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
+                lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
+            ]
+        else:
+            draw_color = WHITE
+            pos_args = [
+                lambda _: { 'topright': (player.pos_bounds.w - PADDING, player.pos_bounds.y + PADDING) },
+                lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
+                lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
+            ]
+        health_rect = self.draw_text(f'HEALTH: {player.health}', color=draw_color, **(pos_args[0](None)))
+        power_rect = self.draw_text(f'POWER: {player.power}', color=draw_color, **(pos_args[1](health_rect)))
+        self.draw_text(f'XP: {player.xp}', color=draw_color, **(pos_args[2](power_rect)))
 
-        health_fmt = 'HEALTH: {}'
-        power_fmt = 'POWER: {}'
-        xp_fmt = 'XP: {}'
+    def draw_text(self, text, color=GRAY, **kwargs):
+        """Draws `text` to the screen at the location described by `kwargs`.
 
-        stat_color = GRAY
-        padding = 5
+        `kwargs` can contain any of the arguments for `Surface.get_rect` (e.g.,
+        "topright").
 
-        # Weber Stats
-        weber_health = self.gamefont.render(health_fmt.format(self.weber.health), 1, stat_color)
-        weber_health_rect = weber_health.get_rect(topright=(self.weber.bounded_region[1][0] - padding, self.weber.bounded_region[0][1] + padding))
-        self.screen.blit(weber_health, weber_health_rect)
-
-        weber_power = self.gamefont.render(power_fmt.format(self.weber.power), 1, stat_color)
-        weber_power_rect = weber_power.get_rect(topright=(weber_health_rect.right, weber_health_rect.bottom + padding))
-        self.screen.blit(weber_power, weber_power_rect)
-
-        weber_xp = self.gamefont.render(xp_fmt.format(self.weber.xp), 1, stat_color)
-        weber_xp_rect = weber_xp.get_rect(topright=(weber_power_rect.right, weber_power_rect.bottom + padding))
-        self.screen.blit(weber_xp, weber_xp_rect)
-
-        # Santa Stats (on bottom)
-        santa_health = self.gamefont.render(health_fmt.format(self.santa.health), 1, stat_color)
-        santa_health_rect = santa_health.get_rect(bottomright=(self.santa.bounded_region[1][0] - padding, self.santa.bounded_region[1][1] - padding))
-        self.screen.blit(santa_health, santa_health_rect)
-
-        santa_power = self.gamefont.render(power_fmt.format(self.santa.power), 1, stat_color)
-        santa_power_rect = santa_power.get_rect(bottomright=(santa_health_rect.right, santa_health_rect.top - padding))
-        self.screen.blit(santa_power, santa_power_rect)
-
-        santa_xp = self.gamefont.render(xp_fmt.format(self.santa.xp), 1, stat_color)
-        santa_xp_rect = santa_xp.get_rect(bottomright=(santa_power_rect.right, santa_power_rect.top - padding))
-        self.screen.blit(santa_xp, santa_xp_rect)
+        Returns the rectangle for the drawn text.
+        """
+        text_surface = self.gamefont.render(text, 1, color)
+        text_rect = text_surface.get_rect(**kwargs)
+        self.screen.blit(text_surface, text_rect)
+        return text_rect
 
     def loop(self):
         running = True
@@ -113,9 +127,10 @@ class Game:
             # Poll the events.
             for event in pg.event.get():
                 # Check if they tryna leave.
-                if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                close_requested = event.type == QUIT
+                close_requested |= event.type == KEYDOWN and event.key == K_ESCAPE
+                if close_requested:
                     running = False
-
             pressed_keys = pg.key.get_pressed()
 
             # Update sprites.
@@ -125,8 +140,9 @@ class Game:
             self.screen.fill(WHITE)
 
             # Draw game environment and players.
-            self.dialog('Santa: "Get ready for some hot suck of dick"')
-            self.stats()
+            self.draw_dialog('Santa: "Get ready for some hot suck of dick"')
+            self.draw_stats(self.weber, is_top_player=True)
+            self.draw_stats(self.santa, is_top_player=False)
             self.groups['all'].draw(self.screen)
 
             # Send results to screen.
@@ -134,5 +150,4 @@ class Game:
 
             # Will make the loop run at the same speed all the time.
             self.clock.tick(FPS)
-
         pg.quit()

@@ -1,20 +1,20 @@
 import pygame as pg
 from pygame.locals import *
 
+from .entity import Entity
+
 MOVE_SPEED = 5.0
 VELOCITY_ATTENUATION = 0.5
-PLAYER_SIZE = 50 # pixels
 
-class Player(pg.sprite.Sprite):
-    def __init__(self, x, y, img_locs, bounded_region=None, is_turn=False):
-        pg.sprite.Sprite.__init__(self, self.groups)
+class Player(Entity):
+    def __init__(self, x, y, images, pos_bounds, is_turn):
         self.img_idx = 0
-        self.images = [pg.transform.scale(pg.image.load(img_loc), (PLAYER_SIZE,) * 2) for img_loc in img_locs]
+        self.images = images
         self.image = self.images[self.img_idx]
-        self.rect = self.image.get_rect(center=(x, y))
+        Entity.__init__(self, self.image, x, y)
 
         # Constraints
-        self.bounded_region = bounded_region
+        self.pos_bounds = pos_bounds
         self.is_turn = is_turn
 
         # Status Fields
@@ -23,8 +23,6 @@ class Player(pg.sprite.Sprite):
         self.xp = 0
 
         # Kinematic Quantities
-        self.x = x
-        self.y = y
         self.xv = 0.0
         self.yv = 0.0
 
@@ -37,7 +35,8 @@ class Player(pg.sprite.Sprite):
         if not self.is_turn:
             return
 
-        # TODO: Invert screen space in the engine so positive y is in the right direction.
+        # TODO: Invert screen space in the engine so positive y is in the right
+        # direction.
 
         # Alter velocity from user input.
         if pressed_keys[K_UP]:
@@ -49,14 +48,35 @@ class Player(pg.sprite.Sprite):
         if pressed_keys[K_RIGHT]:
             self.xv += MOVE_SPEED
 
-        # TODO: Restrict movement to bounded region, and also so player (x, y) is treated as its center, not top-left of rect
-        radius = PLAYER_SIZE / 2.0
-        if self.bounded_region[0][0] + radius < self.x + self.xv < self.bounded_region[1][0] - radius:
-            self.x += self.xv
-        if self.bounded_region[0][1] + radius < self.y + self.yv < self.bounded_region[1][1] - radius:
-            self.y += self.yv
-
-        # Update position and attenuation.
-        self.rect.center = (self.x, self.y)
+        # Update position.
+        self.x += self.xv
+        self.y += self.yv
+        self.clamp_pos_to_bounds()
+        self.rect.bottomleft = (self.x, self.y)
+        # Attenuate velocities.
         self.xv *= VELOCITY_ATTENUATION
         self.yv *= VELOCITY_ATTENUATION
+
+    def clamp_pos_to_bounds(self):
+        # NOTE: We can't use the Rect clamp function, because Rect's store
+        # integral fields, and we need more precision.
+        self_x = self.x
+        self_y = self.y
+        self_w = self.rect.w
+        self_h = self.rect.h
+        bound_x = self.pos_bounds.x
+        bound_y = self.pos_bounds.y
+        bound_w = self.pos_bounds.w
+        bound_h = self.pos_bounds.h
+        if self_x < bound_x:
+            self.x = bound_x
+            self.xv *= -10
+        elif self_x + self_w > bound_x + bound_w:
+            self.x = bound_x + bound_w - self_w
+            self.xv *= -10
+        if self_y - self_h < bound_y:
+            self.y = bound_y + self_h
+            self.yv *= -10
+        elif self_y > bound_y + bound_h:
+            self.y = bound_y + bound_h
+            self.yv *= -10

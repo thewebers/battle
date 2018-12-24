@@ -1,13 +1,14 @@
 
 import pygame as pg
 
+from .entity import Entity
 from .player import Player
 
 class Benjamin(Player):
-    img_locs = ['res/gingerbread-man.png']
+    images = Entity.load_images(['res/benjamin.png'])
 
-    def __init__(self, x, y, region, is_turn=False):
-        Player.__init__(self, x, y, self.img_locs, bounded_region=region, is_turn=is_turn)
+    def __init__(self, x, y, pos_bounds, is_turn=False):
+        Player.__init__(self, x, y, self.images, pos_bounds=pos_bounds, is_turn=is_turn)
 
     def update(self, pressed_keys):
         Player.update(self, pressed_keys)
