@@ -1,0 +1,7 @@
+- Separation of idle and walking animations
+- Shading of art
+- Mugshots
+  - Mom
+  - Dad
+  - Janicholas
+  - Bois
