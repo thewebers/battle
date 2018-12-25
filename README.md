@@ -1,20 +1,18 @@
-list possible character choices
-take name as input
-this character is now fighting fucking Santa
+# Music
 
-Give the player the freedom to draw themselves on the Game. What about
-collisions?
-
-Developer rules:
-  - The attacks and defends must be unnecessarily specific. No generic objects
-    or references. Paint a picture.
+Game music courtesy of https://soundcloud.com/jimkulakowski/sets/a-magical-8-bit-christmas.
 
 # Characters
+
 ## Benjamin
 
-- Bad Chad: Benjamin throws a sports object at your face you and fail to catch it.
-- Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We all saw this coming.
-- Absorbs all your moves in his butt-chin.
+- [A] THE BAD CHAD: "Benjamin throws a 1997-edition signed football from Brett Favre at your stupid face and you fail to catch it."
+    - Entity: Firey, fast football flung in opponents direction at the moment of the throw
+    - Effect: -4 health on impact
+- [D]  Absorbs all your moves in his butt-chin.
+    - 
+- [S] 
+Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We all saw this coming.
 
 ## DeAnne
 
