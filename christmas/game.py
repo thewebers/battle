@@ -16,10 +16,10 @@ FPS = 30
 WHITE = (255, 255, 255)
 LIGHT_GRAY = (200, 200, 200)
 GRAY = (100, 100, 100)
-DARK_GRAY = (50, 50, 50)
+DARK_GRAY = (41, 41, 41)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+RED = (216, 78, 94)
+GREEN = (110, 216, 122)
 BLUE = (0, 0, 255)
 
 class DrawRect(pg.Rect):
@@ -150,27 +150,26 @@ class Game:
         # by rendering and the game world (i.e., y-axes being reversed).
 
         # Render dialog prompt (but don't blit it yet).
-        dialog = self.gamefont.render(msg.upper(), 1, BLACK)
+        dialog = self.gamefont.render(msg.upper(), 1, WHITE)
         dialog_rect = dialog.get_rect(center=(self.width / 2, self.height / 2))
         # Draw regions.
-        self.top_region.draw(self.screen, WHITE)
-        self.middle_region.draw(self.screen, LIGHT_GRAY)
-        self.bottom_region.draw(self.screen, DARK_GRAY)
+        self.top_region.draw(self.screen, RED)
+        self.middle_region.draw(self.screen, DARK_GRAY)
+        self.bottom_region.draw(self.screen, GREEN)
         # Blit dialog at the end, so it's not overwritten by blitting the region rects.
         self.screen.blit(dialog, dialog_rect)
 
     def draw_stats(self, player, is_top_player):
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
+        draw_color = DARK_GRAY
         if is_top_player:
-            draw_color = DARK_GRAY
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
             ]
         else:
-            draw_color = WHITE
             pos_args = [
                 lambda _: { 'topright': (pos_bounds.w - PADDING, pos_bounds.y + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
