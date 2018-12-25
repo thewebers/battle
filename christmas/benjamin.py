@@ -1,16 +1,15 @@
-
 import pygame as pg
 
+from .component import *
 from .entity import Entity
+from .image import load_images
 from .player import Player
 
-class Benjamin(Player):
-    images = Entity.load_images(['res/benjamin.png'])
 
-    def __init__(self, x, y, pos_bounds, is_turn=False):
-        Player.__init__(self, x, y, self.images, pos_bounds=pos_bounds, is_turn=is_turn)
+class Benjamin:
+    SPRITES = load_images(['res/benjamin.png'])
 
-    def update(self, pressed_keys):
-        Player.update(self, pressed_keys)
-        self.img_idx = (self.img_idx + 1) % len(self.images)
-        self.image = self.images[self.img_idx]
+    @staticmethod
+    def init(entity, x, y, pos_bounds):
+        Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES)
+        entity.add_comp(HumanFlagComp())
