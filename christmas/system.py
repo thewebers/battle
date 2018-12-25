@@ -75,24 +75,30 @@ class VelocityAttenuateSystem(System):
             vel.y *= VELOCITY_ATTENUATION
 
 
-class AnimateUpdateSystem(System):
+class PlayerAnimateUpdateSystem(System):
     COMPS = [VelocityComp, DrawComp, AnimateComp]
+    # Number of ticks to wait between animation frames
+    IDLE_ANIM_DELAY = 5
+    MOVING_ANIM_DELAY = 2
+    IDLE_VELOCITY_THRESHOLD = 0.1
 
     def _run(self, entities, _):
-        # Number of ticks to wait between animation frames
-        IDLE_ANIM_DELAY = 5
-        MOVING_ANIM_DELAY = 2
-        IDLE_VELOCITY_THRESHOLD = 0.1
-
         for entity in entities:
             vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
-
-            if abs(vel.x) < IDLE_VELOCITY_THRESHOLD and abs(vel.y) < IDLE_VELOCITY_THRESHOLD:
-                anim_delay = IDLE_ANIM_DELAY
+            if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
+                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
+                anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
             else:
-                anim_delay = MOVING_ANIM_DELAY
+                anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
 
-            if anim.clock >= anim_delay:
+
+class AnimateUpdateSystem(System):
+    COMPS = [DrawComp, AnimateComp]
+
+    def _run(self, entities, _):
+        for entity in entities:
+            draw, anim = entity.get_comps(DrawComp, AnimateComp)
+            if anim.clock >= anim.delay:
                 draw.img_idx = (draw.img_idx + 1) % len(draw.images)
                 draw.image = draw.images[draw.img_idx]
                 anim.clock = 0

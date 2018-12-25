@@ -3,11 +3,11 @@ import random
 import pygame as pg
 from pygame.locals import *
 
-from .benjamin import Benjamin
+from .benjamin import Benjamin, BenjaminMug
 from .component import *
 from .entity import Entity
 from .player import Player
-from .santa import Santa
+from .santa import Santa, SantaMug
 from .system import *
 
 FPS = 30
@@ -40,6 +40,7 @@ class Game:
             PositionBoundSystem(),
             PositionUpdateSystem(),
             VelocityAttenuateSystem(),
+            PlayerAnimateUpdateSystem(),
             AnimateUpdateSystem(),
             DrawUpdateSystem()
         ]
@@ -80,14 +81,24 @@ class Game:
         weber_x, weber_y = self.top_region.center
         self.weber = self.create_entity()
         Benjamin.init(self.weber, weber_x, weber_y, self.top_region)
+        self.weber.get_comp(PositionComp).x -= self.weber.get_comp(SizeComp).w / 2
+        self.weber.get_comp(PositionComp).y -= self.weber.get_comp(SizeComp).h / 2
 
         # Initialize Santa.
         santa_x, santa_y = self.bottom_region.center
         self.santa = self.create_entity()
         Santa.init(self.santa, santa_x, santa_y, self.bottom_region)
+        self.santa.get_comp(PositionComp).x -= self.santa.get_comp(SizeComp).w / 2
+        self.santa.get_comp(PositionComp).y -= self.santa.get_comp(SizeComp).h / 2
 
         self.current_player = self.santa
         self.santa.add_comp(TurnFlagComp())
+
+        MUG_X_PAD = 15
+        self.current_mug = self.create_entity()
+        SantaMug.init(self.current_mug,
+                      MUG_X_PAD,
+                      (self.height - SantaMug.SPRITES[0].get_height()) / 2)
 
     def run(self):
         running = True
@@ -103,14 +114,7 @@ class Game:
 
             # Switch turns.
             if pressed_keys[K_s]:
-                self.current_player.remove_comp(TurnFlagComp)
-                if self.current_player == self.weber:
-                    self.current_player = self.santa
-                elif self.current_player == self.santa:
-                    self.current_player = self.weber
-                else:
-                    assert False
-                self.current_player.add_comp(TurnFlagComp())
+                self.switch_turns()
 
             # Run systems.
             for system in self.systems:
@@ -128,6 +132,18 @@ class Game:
             # Will make the loop run at the same speed all the time.
             self.clock.tick(FPS)
         pg.quit()
+
+    def switch_turns(self):
+        self.current_player.remove_comp(TurnFlagComp)
+        if self.current_player == self.weber:
+            self.current_player = self.santa
+            self.current_mug.set_comp(DrawComp(SantaMug.SPRITES))
+        elif self.current_player == self.santa:
+            self.current_player = self.weber
+            self.current_mug.set_comp(DrawComp(BenjaminMug.SPRITES))
+        else:
+            assert False
+        self.current_player.add_comp(TurnFlagComp())
 
     def create_entity(self):
         # TODO: Make generational index allocator.

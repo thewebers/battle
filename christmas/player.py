@@ -6,6 +6,8 @@ from .component import *
 
 
 class Player:
+    DEFAULT_ANIM_DELAY = 5
+
     @staticmethod
     def init(entity, x, y, pos_bounds, sprites):
         entity.add_comp(PositionComp(x, y))
@@ -13,7 +15,7 @@ class Player:
         entity.add_comp(PlayerComp())
         entity.add_comp(PositionBoundComp(pos_bounds))
         entity.add_comp(DrawComp(sprites))
-        entity.add_comp(AnimateComp())
+        entity.add_comp(AnimateComp(Player.DEFAULT_ANIM_DELAY))
         # TODO: Make sure all sprites have the same dimensions.
         entity.add_comp(SizeComp(sprites[0].get_width(),
                                  sprites[0].get_height()))

@@ -40,8 +40,9 @@ class DrawComp(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 class AnimateComp:
-    def __init__(self):
+    def __init__(self, delay):
         self.clock = 0
+        self.delay = delay
 
 class TurnFlagComp: pass
 
