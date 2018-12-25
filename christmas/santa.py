@@ -9,8 +9,8 @@ from .player import Player
 
 class Santa:
     SPRITES = load_images([
-        'res/santa_back_down.png',
-        'res/santa_back_up.png',
+        'res/img/santa_back_1.png',
+        'res/img/santa_back_2.png',
         # 'res/santa_front_down.png',
         # 'res/santa_front_up.png',
     ], scale_factor=4)

@@ -7,7 +7,10 @@ from .player import Player
 
 
 class Benjamin:
-    SPRITES = load_images(['res/benjamin.png'])
+    SPRITES = load_images([
+        'res/img/ben_1.png',
+        'res/img/ben_2.png'
+    ], scale_factor=4)
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
