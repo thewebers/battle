@@ -1,17 +1,25 @@
 import pygame as pg
 
-class Entity(pg.sprite.Sprite):
-    def __init__(self, image, x, y):
-        pg.sprite.Sprite.__init__(self, self.groups)
-        self.image = image
-        self.rect = self.image.get_rect(center=(x, y))
-        self.x = x
-        self.y = y
 
-    @staticmethod
-    def load_images(img_locs, scale_2x=False):
-        """Loads and scales the images found in `img_locs`."""
-        images = [pg.image.load(img_loc) for img_loc in img_locs]
-        if scale_2x:
-            images = [pg.transform.scale2x(img) for img in images]
-        return images
+class Entity:
+    def __init__(self, ident):
+        self.ident = ident
+        self.comps = {}
+
+    def add_comp(self, comp):
+        comp_type = type(comp)
+        assert(not self.has_comp(comp_type))
+        self.comps[comp_type] = comp
+
+    def remove_comp(self, comp_type):
+        assert(self.has_comp(comp_type))
+        del self.comps[comp_type]
+
+    def has_comp(self, comp):
+        return comp in self.comps
+
+    def get_comp(self, comp_type):
+        return self.comps[comp_type]
+
+    def get_comps(self, *comps):
+        return tuple(self.comps[comp] for comp in comps)

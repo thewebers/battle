@@ -1,36 +1,21 @@
 import pygame as pg
 
+from .component import *
 from .entity import Entity
+from .image import load_images
 from .player import Player
 
 # TODO: Make Santa a bot.
 
-class Santa(Player):
-    # Number of ticks to wait between animation frames
-    IDLE_ANIM_DELAY = 5
-    MOVING_ANIM_DELAY = 2
-    IDLE_VELOCITY_THRESHOLD = 0.1
-    images = Entity.load_images([
-        'res/santa_back_down.png',
-        'res/santa_back_up.png',
+class Santa:
+    SPRITES = load_images([
+        'res/img/santa_back_1.png',
+        'res/img/santa_back_2.png',
         # 'res/santa_front_down.png',
         # 'res/santa_front_up.png',
-    ], scale_2x=True)
+    ], scale_factor=4)
 
-    def __init__(self, x, y, pos_bounds, is_turn=False):
-        Player.__init__(self, x, y, self.images, pos_bounds=pos_bounds, is_turn=is_turn)
-        self.anim_clock = 0
-        self.anim_delay = Santa.IDLE_ANIM_DELAY
-
-    def update(self, pressed_keys):
-        Player.update(self, pressed_keys)
-        if abs(self.xv) < Santa.IDLE_VELOCITY_THRESHOLD and abs(self.yv) < Santa.IDLE_VELOCITY_THRESHOLD:
-            self.anim_delay = Santa.IDLE_ANIM_DELAY
-        else:
-            self.anim_delay = Santa.MOVING_ANIM_DELAY
-
-        if self.anim_clock >= self.anim_delay:
-            self.img_idx = (self.img_idx + 1) % len(self.images)
-            self.image = self.images[self.img_idx]
-            self.anim_clock = 0
-        self.anim_clock += 1
+    @staticmethod
+    def init(entity, x, y, pos_bounds):
+        Player.init(entity, x, y, pos_bounds, Santa.SPRITES)
+        entity.add_comp(SantaFlagComp())

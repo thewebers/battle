@@ -3,20 +3,23 @@ import random
 import pygame as pg
 from pygame.locals import *
 
+from .benjamin import Benjamin
+from .component import *
+from .entity import Entity
 from .player import Player
 from .santa import Santa
-from .benjamin import Benjamin
+from .system import *
 
 FPS = 30
 
-# Define colors.
+# Colors
 WHITE = (255, 255, 255)
 LIGHT_GRAY = (200, 200, 200)
 GRAY = (100, 100, 100)
-DARK_GRAY = (50, 50, 50)
+DARK_GRAY = (41, 41, 41)
 BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
+RED = (216, 78, 94)
+GREEN = (110, 216, 122)
 BLUE = (0, 0, 255)
 
 class DrawRect(pg.Rect):
@@ -32,11 +35,20 @@ class Game:
     def __init__(self, width, height):
         self.width = width
         self.height = height
+        self.systems = [
+            PlayerUpdateSystem(),
+            PositionBoundSystem(),
+            PositionUpdateSystem(),
+            VelocityAttenuateSystem(),
+            AnimateUpdateSystem(),
+            DrawUpdateSystem()
+        ]
+        self.entities = []
 
     def start(self):
         """Let the sin... begin."""
         self.init()
-        self.loop()
+        self.run()
 
     def init(self):
         pg.init()
@@ -57,17 +69,77 @@ class Game:
         DIALOG_BOTTOM = DIALOG_TOP + DIALOG_HEIGHT
         self.top_region = DrawRect(0, 0, self.width, DIALOG_TOP)
         self.middle_region = DrawRect(0, DIALOG_TOP, self.width, DIALOG_HEIGHT)
-        self.bottom_region = DrawRect(0, DIALOG_BOTTOM, self.width, self.height - DIALOG_TOP)
+        self.bottom_region = DrawRect(0, DIALOG_BOTTOM, self.width, self.height - DIALOG_BOTTOM)
 
-        # Initialize players.
-        self.groups = {
-            'all': pg.sprite.RenderUpdates(),
-        }
-        Player.groups = self.groups['all']
+        # We only use a single PyGame group for all of our rendering, because
+        # we have our own ECS architecture for organizing entities.
+        self.sprite_group = pg.sprite.RenderUpdates()
+        DrawComp.groups = self.sprite_group
+
+        # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
-        self.weber = Benjamin(weber_x, weber_y, self.top_region, is_turn=False)
+        self.weber = self.create_entity()
+        Benjamin.init(self.weber, weber_x, weber_y, self.top_region)
+
+        # Initialize Santa.
         santa_x, santa_y = self.bottom_region.center
-        self.santa = Santa(santa_x, santa_y, self.bottom_region, is_turn=True)
+        self.santa = self.create_entity()
+        Santa.init(self.santa, santa_x, santa_y, self.bottom_region)
+
+        self.current_player = self.santa
+        self.santa.add_comp(TurnFlagComp())
+
+    def run(self):
+        running = True
+        while running:
+            # Poll the events.
+            for event in pg.event.get():
+                # Check if they tryna leave.
+                close_requested = event.type == QUIT
+                close_requested |= event.type == KEYDOWN and event.key == K_ESCAPE
+                if close_requested:
+                    running = False
+            pressed_keys = pg.key.get_pressed()
+
+            # Switch turns.
+            if pressed_keys[K_s]:
+                self.current_player.remove_comp(TurnFlagComp)
+                if self.current_player == self.weber:
+                    self.current_player = self.santa
+                elif self.current_player == self.santa:
+                    self.current_player = self.weber
+                else:
+                    assert False
+                self.current_player.add_comp(TurnFlagComp())
+
+            # Run systems.
+            for system in self.systems:
+                system.run(self.entities, pressed_keys)
+
+            # Draw game environment and players.
+            self.draw_dialog('Santa: "Get ready for some hot suck of dick"')
+            self.draw_stats(self.weber, is_top_player=True)
+            self.draw_stats(self.santa, is_top_player=False)
+            self.sprite_group.draw(self.screen)
+
+            # Send results to screen.
+            pg.display.flip()
+
+            # Will make the loop run at the same speed all the time.
+            self.clock.tick(FPS)
+        pg.quit()
+
+    def create_entity(self):
+        # TODO: Make generational index allocator.
+        result_id = len(self.entities)
+        result = Entity(result_id)
+        self.entities.append(result)
+        return result
+
+    def destroy_entity(self, entity):
+        assert(entity.ident < len(self.entities))
+        assert(self.entities[entity.ident] is not None)
+        self.entities[entity.ident] = None
 
     def draw_dialog(self, msg):
         """Draw dialog component in the middle of screen."""
@@ -78,34 +150,35 @@ class Game:
         # by rendering and the game world (i.e., y-axes being reversed).
 
         # Render dialog prompt (but don't blit it yet).
-        dialog = self.gamefont.render(msg.upper(), 1, BLACK)
+        dialog = self.gamefont.render(msg.upper(), 1, WHITE)
         dialog_rect = dialog.get_rect(center=(self.width / 2, self.height / 2))
         # Draw regions.
-        self.top_region.draw(self.screen, WHITE)
-        self.middle_region.draw(self.screen, LIGHT_GRAY)
-        self.bottom_region.draw(self.screen, DARK_GRAY)
+        self.top_region.draw(self.screen, RED)
+        self.middle_region.draw(self.screen, DARK_GRAY)
+        self.bottom_region.draw(self.screen, GREEN)
         # Blit dialog at the end, so it's not overwritten by blitting the region rects.
         self.screen.blit(dialog, dialog_rect)
 
     def draw_stats(self, player, is_top_player):
         PADDING = 5
+        pos_bounds = player.get_comp(PositionBoundComp)
+        draw_color = DARK_GRAY
         if is_top_player:
-            draw_color = DARK_GRAY
             pos_args = [
-                lambda _: { 'bottomright': (player.pos_bounds.w - PADDING, player.pos_bounds.h - PADDING) },
+                lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
             ]
         else:
-            draw_color = WHITE
             pos_args = [
-                lambda _: { 'topright': (player.pos_bounds.w - PADDING, player.pos_bounds.y + PADDING) },
+                lambda _: { 'topright': (pos_bounds.w - PADDING, pos_bounds.y + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
             ]
-        health_rect = self.draw_text(f'HEALTH: {player.health}', color=draw_color, **(pos_args[0](None)))
-        power_rect = self.draw_text(f'POWER: {player.power}', color=draw_color, **(pos_args[1](health_rect)))
-        self.draw_text(f'XP: {player.xp}', color=draw_color, **(pos_args[2](power_rect)))
+        player_comp = player.get_comp(PlayerComp)
+        health_rect = self.draw_text(f'HEALTH: {player_comp.curr_health} / {player_comp.max_health}', color=draw_color, **(pos_args[0](None)))
+        power_rect = self.draw_text(f'POWER: {player_comp.curr_power} / {player_comp.max_power}', color=draw_color, **(pos_args[1](health_rect)))
+        self.draw_text(f'DRUNKENNESS: {player_comp.curr_drunkenness} / {player_comp.max_drunkenness}', color=draw_color, **(pos_args[2](power_rect)))
 
     def draw_text(self, text, color=GRAY, **kwargs):
         """Draws `text` to the screen at the location described by `kwargs`.
@@ -119,34 +192,3 @@ class Game:
         text_rect = text_surface.get_rect(**kwargs)
         self.screen.blit(text_surface, text_rect)
         return text_rect
-
-    def loop(self):
-        running = True
-        while running:
-            # Poll the events.
-            for event in pg.event.get():
-                # Check if they tryna leave.
-                close_requested = event.type == QUIT
-                close_requested |= event.type == KEYDOWN and event.key == K_ESCAPE
-                if close_requested:
-                    running = False
-            pressed_keys = pg.key.get_pressed()
-
-            # Update sprites.
-            self.groups['all'].update(pressed_keys)
-
-            # Wipe frame.
-            self.screen.fill(WHITE)
-
-            # Draw game environment and players.
-            self.draw_dialog('Santa: "Get ready for some hot suck of dick"')
-            self.draw_stats(self.weber, is_top_player=True)
-            self.draw_stats(self.santa, is_top_player=False)
-            self.groups['all'].draw(self.screen)
-
-            # Send results to screen.
-            pg.display.flip()
-
-            # Will make the loop run at the same speed all the time.
-            self.clock.tick(FPS)
-        pg.quit()
