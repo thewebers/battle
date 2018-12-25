@@ -31,7 +31,7 @@ class Player(Entity):
         if pressed_keys[K_s]:
             self.is_turn = not self.is_turn
 
-        # Only act if its your turn.
+        # Only act if it's your turn.
         if not self.is_turn:
             return
 
