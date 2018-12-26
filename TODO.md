@@ -15,6 +15,7 @@
 - Drunkify text
 
 # Luke
+- Solidify player attacks
 - Draw projectiles 42 (2 frames x (3 attacks x 8 players))
 - Particle system
   - Fire
