@@ -14,3 +14,5 @@
 - Shading of art
 - Drunkify text
 - Draw projectiles
+  - Christmas tree
+  - Candy cane texture
