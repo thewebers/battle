@@ -11,11 +11,14 @@ class Benjamin:
         'res/img/ben_1.png',
         'res/img/ben_2.png'
     ], scale_factor=4)
+    QUOTES = [
+        'Eat balls!',
+    ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
         Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES)
-        entity.add_comp(HumanFlagComp())
+        entity.add_comp(WeberFlagComp())
 
 
 class BenjaminMug:

@@ -14,6 +14,10 @@ class VelocityComp:
 
 SizeComp = namedtuple('SizeComp', ['w', 'h'])
 
+class LifetimeComp:
+    def __init__(self, life):
+        self.life = life
+
 class PlayerComp:
     MAX_HEALTH = 10
     MAX_POWER = 10
@@ -46,6 +50,10 @@ class AnimateComp:
 
 class TurnFlagComp: pass
 
-class HumanFlagComp: pass
+class WeberFlagComp: pass
 
 class SantaFlagComp: pass
+
+class VelocityAttenuateFlagComp: pass
+
+class DeadFlagComp: pass

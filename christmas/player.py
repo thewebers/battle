@@ -19,3 +19,4 @@ class Player:
         # TODO: Make sure all sprites have the same dimensions.
         entity.add_comp(SizeComp(sprites[0].get_width(),
                                  sprites[0].get_height()))
+        entity.add_comp(VelocityAttenuateFlagComp())
