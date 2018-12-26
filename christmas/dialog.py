@@ -29,7 +29,7 @@ class DialogWindow:
         self.curr_frame.update(self.screen_region)
 
     def draw(self, screen):
-        self.screen_region.draw(screen, DARK_GRAY)
+        self.screen_region.draw(screen, WHITE)
         self.curr_frame.draw(self.font, self.screen_region, screen)
 
     def enqueue(self, frame):

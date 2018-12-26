@@ -111,9 +111,9 @@ class Game:
                 system.run()
 
             # Draw game environment.
-            self.top_region.draw(self.screen, RED)
+            self.top_region.draw(self.screen, DARK_GRAY)
             self.dialog_window.draw(self.screen)
-            self.bottom_region.draw(self.screen, GREEN)
+            self.bottom_region.draw(self.screen, DARK_GRAY)
             self.draw_stats(self.weber, is_top_player=True)
             self.draw_stats(self.santa, is_top_player=False)
 
@@ -160,7 +160,7 @@ class Game:
     def draw_stats(self, player, is_top_player):
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
-        draw_color = DARK_GRAY
+        draw_color = WHITE
         if is_top_player:
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
