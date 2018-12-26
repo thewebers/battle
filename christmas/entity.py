@@ -1,12 +1,15 @@
 import pygame as pg
 
-from .component import DrawComp
+from .component import DrawComp, DeadFlagComp
 
 
 class Entity:
     def __init__(self, ident):
         self.ident = ident
         self.comps = {}
+
+    def kill(self):
+        self.add_comp(DeadFlagComp())
 
     def add_comp(self, comp):
         comp_type = type(comp)
@@ -16,15 +19,16 @@ class Entity:
     def set_comp(self, comp):
         comp_type = type(comp)
         if self.has_comp(comp_type):
-            old_comp = self.comps[comp_type]
-            if isinstance(old_comp, DrawComp):
-                # Need to manually kill dead sprites, or else they will
-                # continue to be drawn.
-                old_comp.kill()
+            self.remove_comp(comp_type)
         self.comps[comp_type] = comp
 
     def remove_comp(self, comp_type):
         assert(self.has_comp(comp_type))
+        comp = self.comps[comp_type]
+        if isinstance(comp, DrawComp):
+            # Need to manually kill dead sprites, or else they will
+            # continue to be drawn.
+            comp.kill()
         del self.comps[comp_type]
 
     def has_comp(self, comp_type):

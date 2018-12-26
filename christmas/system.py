@@ -1,41 +1,66 @@
 from pygame.locals import *
 
 from .component import *
+from .santa import CoalProjectile
 
 
 class System:
-    def run(self, entities, pressed_keys):
-        filtered_entities = [entity for entity in entities
-                             if all(map(lambda c: entity.has_comp(c), self.COMPS))]
-        self._run(filtered_entities, pressed_keys)
+    def __init__(self, game):
+        self.game = game
+
+    def run(self):
+        filtered_entities = [entity for entity in self.game.entities
+                             if entity is not None and
+                             all(map(lambda c: entity.has_comp(c), self.COMPS))]
+        self._run(filtered_entities)
 
     def _run(self, *_):
         raise NotImplementedError
 
 
-class PlayerUpdateSystem(System):
-    COMPS = [VelocityComp, TurnFlagComp]
+class WeberUpdateSystem(System):
+    COMPS = [VelocityComp, WeberFlagComp]
+    MOVE_SPEED = 5.0
 
-    def _run(self, entities, pressed_keys):
-        MOVE_SPEED = 5.0
-
+    def _run(self, entities):
         assert(len(entities) == 1)
         for entity in entities:
             vel = entity.get_comp(VelocityComp)
-            if pressed_keys[K_UP]:
-                vel.y -= MOVE_SPEED
-            if pressed_keys[K_DOWN]:
-                vel.y += MOVE_SPEED
-            if pressed_keys[K_LEFT]:
-                vel.x -= MOVE_SPEED
-            if pressed_keys[K_RIGHT]:
-                vel.x += MOVE_SPEED
+            if self.game.is_key_pressed(K_w):
+                vel.y -= WeberUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_s):
+                vel.y += WeberUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_a):
+                vel.x -= WeberUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_d):
+                vel.x += WeberUpdateSystem.MOVE_SPEED
+
+
+class SantaUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, SantaFlagComp]
+    MOVE_SPEED = 5.0
+
+    def _run(self, entities):
+        assert(len(entities) == 1)
+        for entity in entities:
+            pos, vel = entity.get_comps(PositionComp, VelocityComp)
+            if self.game.is_key_pressed(K_UP):
+                vel.y -= SantaUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_DOWN):
+                vel.y += SantaUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_LEFT):
+                vel.x -= SantaUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_RIGHT):
+                vel.x += SantaUpdateSystem.MOVE_SPEED
+            if self.game.is_key_pressed(K_SPACE):
+                coal = self.game.create_entity()
+                CoalProjectile.init(coal, pos.x, pos.y, vel.x, vel.y)
 
 
 class PositionBoundSystem(System):
     COMPS = [PositionComp, VelocityComp, SizeComp, PositionBoundComp]
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         for entity in entities:
             pos, vel, size, bound = entity.get_comps(PositionComp, VelocityComp, SizeComp, PositionBoundComp)
             intended_pos = PositionComp(pos.x + vel.x, pos.y + vel.y)
@@ -56,7 +81,7 @@ class PositionBoundSystem(System):
 class PositionUpdateSystem(System):
     COMPS = [PositionComp, VelocityComp]
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         for entity in entities:
             pos, vel = entity.get_comps(PositionComp, VelocityComp)
             pos.x += vel.x
@@ -64,9 +89,9 @@ class PositionUpdateSystem(System):
 
 
 class VelocityAttenuateSystem(System):
-    COMPS = [VelocityComp]
+    COMPS = [VelocityComp, VelocityAttenuateFlagComp]
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         VELOCITY_ATTENUATION = 0.5
 
         for entity in entities:
@@ -82,7 +107,7 @@ class PlayerAnimateUpdateSystem(System):
     MOVING_ANIM_DELAY = 2
     IDLE_VELOCITY_THRESHOLD = 0.1
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         for entity in entities:
             vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
             if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
@@ -92,10 +117,29 @@ class PlayerAnimateUpdateSystem(System):
                 anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
 
 
+class LifetimeUpdateSystem(System):
+    COMPS = [LifetimeComp]
+
+    def _run(self, entities):
+        for entity in entities:
+            lifetime = entity.get_comp(LifetimeComp)
+            lifetime.life -= 1
+            if lifetime.life <= 0:
+                entity.kill()
+
+
+class DeadCleanupSystem(System):
+    COMPS = [DeadFlagComp]
+
+    def _run(self, entities):
+        for entity in entities:
+            self.game.destroy_entity(entity)
+
+
 class AnimateUpdateSystem(System):
     COMPS = [DrawComp, AnimateComp]
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         for entity in entities:
             draw, anim = entity.get_comps(DrawComp, AnimateComp)
             if anim.clock >= anim.delay:
@@ -108,7 +152,7 @@ class AnimateUpdateSystem(System):
 class DrawUpdateSystem(System):
     COMPS = [PositionComp, DrawComp]
 
-    def _run(self, entities, _):
+    def _run(self, entities):
         for entity in entities:
             pos, draw = entity.get_comps(PositionComp, DrawComp)
             draw.rect.topleft = (pos.x, pos.y)

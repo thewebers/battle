@@ -4,28 +4,16 @@ import pygame as pg
 from pygame.locals import *
 
 from .benjamin import Benjamin, BenjaminMug
+from .color import *
 from .component import *
+from .dialog import DialogWindow, QuoteFrame
 from .entity import Entity
 from .player import Player
 from .santa import Santa, SantaMug
 from .system import *
+from .util import DrawRect
 
 FPS = 30
-
-# Colors
-WHITE = (255, 255, 255)
-LIGHT_GRAY = (200, 200, 200)
-GRAY = (100, 100, 100)
-DARK_GRAY = (41, 41, 41)
-BLACK = (0, 0, 0)
-RED = (216, 78, 94)
-GREEN = (110, 216, 122)
-BLUE = (0, 0, 255)
-
-class DrawRect(pg.Rect):
-    """PyGame `Rect` that can be drawn."""
-    def draw(self, screen, color):
-        pg.draw.rect(screen, color, self)
 
 
 class Game:
@@ -36,15 +24,19 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
-            PlayerUpdateSystem(),
-            PositionBoundSystem(),
-            PositionUpdateSystem(),
-            VelocityAttenuateSystem(),
-            PlayerAnimateUpdateSystem(),
-            AnimateUpdateSystem(),
-            DrawUpdateSystem()
+            WeberUpdateSystem(self),
+            SantaUpdateSystem(self),
+            PositionBoundSystem(self),
+            PositionUpdateSystem(self),
+            VelocityAttenuateSystem(self),
+            LifetimeUpdateSystem(self),
+            DeadCleanupSystem(self),
+            PlayerAnimateUpdateSystem(self),
+            AnimateUpdateSystem(self),
+            DrawUpdateSystem(self)
         ]
         self.entities = []
+        self.pressed_keys = {}
 
     def start(self):
         """Let the sin... begin."""
@@ -61,16 +53,16 @@ class Game:
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.gamefont = pg.font.SysFont('Consolas', 16)
+        self.font = pg.font.SysFont('Consolas', 14)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
-        DIALOG_HEIGHT = 100
-        DIALOG_TOP = (self.height - DIALOG_HEIGHT) / 2
-        DIALOG_BOTTOM = DIALOG_TOP + DIALOG_HEIGHT
-        self.top_region = DrawRect(0, 0, self.width, DIALOG_TOP)
-        self.middle_region = DrawRect(0, DIALOG_TOP, self.width, DIALOG_HEIGHT)
-        self.bottom_region = DrawRect(0, DIALOG_BOTTOM, self.width, self.height - DIALOG_BOTTOM)
+        # NB: The dialog window is between the top region and the bottom region.
+        self.dialog_window = DialogWindow(self.width, self.height, self.font)
+        dialog_rect = self.dialog_window.get_rect()
+        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top)
+        self.bottom_region = DrawRect(0, dialog_rect.bottom,
+                                      self.width, self.height - dialog_rect.bottom)
 
         # We only use a single PyGame group for all of our rendering, because
         # we have our own ECS architecture for organizing entities.
@@ -94,36 +86,37 @@ class Game:
         self.current_player = self.santa
         self.santa.add_comp(TurnFlagComp())
 
-        MUG_X_PAD = 15
-        self.current_mug = self.create_entity()
-        SantaMug.init(self.current_mug,
-                      MUG_X_PAD,
-                      (self.height - SantaMug.SPRITES[0].get_height()) / 2)
-
     def run(self):
         running = True
         while running:
             # Poll the events.
             for event in pg.event.get():
+                if event.type == KEYDOWN:
+                    self.pressed_keys[event.key] = True
+                elif event.type == KEYUP:
+                    self.pressed_keys[event.key] = False
                 # Check if they tryna leave.
                 close_requested = event.type == QUIT
-                close_requested |= event.type == KEYDOWN and event.key == K_ESCAPE
+                close_requested |= self.is_key_pressed(K_ESCAPE)
                 if close_requested:
                     running = False
-            pressed_keys = pg.key.get_pressed()
 
-            # Switch turns.
-            if pressed_keys[K_s]:
+            if self.is_key_pressed(K_TAB):
                 self.switch_turns()
 
+            self.dialog_window.update()
             # Run systems.
             for system in self.systems:
-                system.run(self.entities, pressed_keys)
+                system.run()
 
-            # Draw game environment and players.
-            self.draw_dialog('Santa: "Get ready for some hot suck of dick"')
+            # Draw game environment.
+            self.top_region.draw(self.screen, RED)
+            self.dialog_window.draw(self.screen)
+            self.bottom_region.draw(self.screen, GREEN)
             self.draw_stats(self.weber, is_top_player=True)
             self.draw_stats(self.santa, is_top_player=False)
+
+            # Draw entities.
             self.sprite_group.draw(self.screen)
 
             # Send results to screen.
@@ -137,12 +130,15 @@ class Game:
         self.current_player.remove_comp(TurnFlagComp)
         if self.current_player == self.weber:
             self.current_player = self.santa
-            self.current_mug.set_comp(DrawComp(SantaMug.SPRITES))
+            sprites = SantaMug.SPRITES
+            quote = random.choice(Santa.QUOTES)
         elif self.current_player == self.santa:
             self.current_player = self.weber
-            self.current_mug.set_comp(DrawComp(BenjaminMug.SPRITES))
+            sprites = BenjaminMug.SPRITES
+            quote = random.choice(Benjamin.QUOTES)
         else:
             assert False
+        self.dialog_window.enqueue((QuoteFrame, [self, sprites, quote]))
         self.current_player.add_comp(TurnFlagComp())
 
     def create_entity(self):
@@ -155,25 +151,10 @@ class Game:
     def destroy_entity(self, entity):
         assert(entity.ident < len(self.entities))
         assert(self.entities[entity.ident] is not None)
+        # TODO: `Game` shouldn't have to worry about killing `DrawComp`s.
+        if entity.has_comp(DrawComp):
+            entity.get_comp(DrawComp).kill()
         self.entities[entity.ident] = None
-
-    def draw_dialog(self, msg):
-        """Draw dialog component in the middle of screen."""
-        PADDING = 40
-        # TODO: Maybe couple the rendering of regions with the regions that
-        # confine the players.  Make a `Region` class?
-        # TODO: Reconcile between the different coordinate systems being used
-        # by rendering and the game world (i.e., y-axes being reversed).
-
-        # Render dialog prompt (but don't blit it yet).
-        dialog = self.gamefont.render(msg.upper(), 1, WHITE)
-        dialog_rect = dialog.get_rect(center=(self.width / 2, self.height / 2))
-        # Draw regions.
-        self.top_region.draw(self.screen, RED)
-        self.middle_region.draw(self.screen, DARK_GRAY)
-        self.bottom_region.draw(self.screen, GREEN)
-        # Blit dialog at the end, so it's not overwritten by blitting the region rects.
-        self.screen.blit(dialog, dialog_rect)
 
     def draw_stats(self, player, is_top_player):
         PADDING = 5
@@ -204,7 +185,10 @@ class Game:
 
         Returns the rectangle for the drawn text.
         """
-        text_surface = self.gamefont.render(text, 1, color)
+        text_surface = self.font.render(text, 1, color)
         text_rect = text_surface.get_rect(**kwargs)
         self.screen.blit(text_surface, text_rect)
         return text_rect
+
+    def is_key_pressed(self, key):
+        return self.pressed_keys.get(key, False)
