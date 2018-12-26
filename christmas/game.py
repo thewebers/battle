@@ -9,6 +9,7 @@ from .entity import Entity
 from .player import Player
 from .santa import Santa, SantaMug
 from .system import *
+from .sound import Sound, SoundType
 
 FPS = 30
 
@@ -54,14 +55,14 @@ class Game:
     def init(self):
         pg.init()
 
-        # Sound
-        pg.mixer.init()
+        # Game Music and Sound
+        self.sound = Sound()
 
         # Window
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.gamefont = pg.font.SysFont('Consolas', 16)
+        self.gamefont = pg.font.Font('res/font/8-bitpusab.ttf', 16)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
