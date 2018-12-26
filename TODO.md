@@ -10,5 +10,7 @@
 - Collide projectiles with players.
 - Bounce projectiles off walls.
 
-# Ben's Shit Queue
+# Ben's / Luke's Shit Queue
 - Shading of art
+- Drunkify text
+- Draw projectiles
