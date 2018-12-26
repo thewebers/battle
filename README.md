@@ -1,31 +1,26 @@
-# Music
-
-Game music courtesy of https://soundcloud.com/jimkulakowski/sets/a-magical-8-bit-christmas.
-
 # Characters
 
 ## Benjamin
 
-- [A] THE BAD CHAD: "Benjamin throws a 1997-edition signed football from Brett Favre at your stupid face and you fail to catch it."
+- THE BAD CHAD: "Benjamin throws a 1997-edition signed football from Brett Favre at your stupid face and you fail to catch it."
     - Entity: Firey, fast football flung in opponents direction at the moment of the throw
     - Effect: -4 health on impact
-- [D]  Absorbs all your moves in his butt-chin.
-    - 
-- [S] 
-Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We all saw this coming.
+- Absorbs all your moves in his butt-chin.
+    - ... 
+- Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We all saw this coming.
+    - ...
 
 ## DeAnne
 
-- Paints a ...
-- Special: Mom now intermittently says "Imma knock you into next week," and with %10 each time she actuall does.
-  A week passes and you've lost health due to starvation.
+- ROCK TIME: Drops a rock somewhere on her side of the map, and it deflects attacks.
 - The Gift of Life: Attempts to create a girl, with 10% she has a girl named Lane, but with 90% she makes another testosterone-filled boy Donald that doesn't seem to appreciate her generous contributions and services - sucks the life out of her on every turn.
+- TEXAN: Mom now intermittently says "Imma knock you into next week," and with %10 each time she actuall does.
+  A week passes and you've lost health due to starvation.
 
 ## Janicholas (two-headed beast)
 
-- Bodhisattva: Throws Bodhi 
-- You See, The Oil Markets ...: Says some shit about the economy that doesn't
-  make sense.
+- Bodhisattva: Throws Bodhi bot as it runs towards the enemy. It's a fluff ball with eyes.
+- You See, The Oil Markets ...: Says some shit about the economy that doesn't make sense.
 - Something related to Elon Musk
 - IDKWDYWD - "I don't know, what do you want to do" - confuses opponent.
 
@@ -33,8 +28,7 @@ Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We
 - Faraday Cage: Defends against EM waves and recuperates. "Joshua will live 10
   years longer than any other family member. But for now, he just kinda looks
   crazy".
-- Acting: Josh pretends to ...
-- 
+- THE HOLLYWOOD: Josh turns into Santa, and any damage done onto Josh is done to Santa.
 
 ## Logan
 - Breakdance Tornado: Plays Safety Dance hook and shoots out toxic semen.
@@ -56,7 +50,6 @@ Toker: Smokes too much weed and accidentally attacks himself. Fucking stoner. We
 
 ## Santa
 Drunken, dickhead Santa Claus.
-TODO: Method acting to get his quotes.
 
 TODO: give to each other player, have it diminish their attacks and defends on a scale
 of 1% to 100% according to their drunkeness given by Santa
@@ -76,4 +69,10 @@ Drunkenly steps when he tries to move (just a slightly random force pushing him 
 - Hitman: Large Will-Ferrell-esque bot chases you for 15 seconds. Each hit does
   10% damage. While chasing you, says will ferrell quotes from Elf. TODO: Can we
   use actual audio from Elf?
-- Calls you a r*tared n*gger.
+- Calls you a r*tared n*gger
+
+# Acknowledgements
+
+Game music courtesy of https://soundcloud.com/jimkulakowski/sets/a-magical-8-bit-christmas.
+Sound effects taken from https://bassgorilla.com/video-game-sound-effects.
+Game font downloaded from https://www.urbanfonts.com/fonts/8-bit_pusab.font.
