@@ -1,4 +1,4 @@
-# Queue that's Actually Being Done
+# Everyone
 - Add turn-based gameplay.
   - Figure out dialog behavior.
     - We want arbitrary progression conditions between different dialog frames.
@@ -10,9 +10,18 @@
 - Collide projectiles with players.
 - Bounce projectiles off walls.
 
-# Ben's / Luke's Shit Queue
+# Ben
 - Shading of art
 - Drunkify text
-- Draw projectiles
-  - Christmas tree
-  - Candy cane texture
+
+# Luke
+- Draw projectiles 42 (2 frames x (3 attacks x 8 players))
+- Particle system
+  - Fire
+  - Snowflakes/snow
+  - Drunk bubbles
+- Draw environment
+  - Hearts (health)
+  - Ornaments (4 types)
+  - Christmas tree, big
+  - Candy cane texture, dialog
