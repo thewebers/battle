@@ -7,6 +7,7 @@ from .sound import Sound, SoundType
 from .color import *
 from .component import *
 from .dialog import DialogWindow, QuoteFrame
+from .globe import SnowGlobe
 from .entity import Entity
 from .player import Player
 from .santa import Santa, SantaMug
@@ -25,6 +26,7 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
+            SnowUpdateSystem(self),
             WeberUpdateSystem(self),
             SantaUpdateSystem(self),
             PositionBoundSystem(self),
@@ -32,6 +34,7 @@ class Game:
             VelocityAttenuateSystem(self),
             LifetimeUpdateSystem(self),
             DeadCleanupSystem(self),
+            TrespassCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self)
@@ -87,6 +90,9 @@ class Game:
         self.current_player = self.santa
         self.santa.add_comp(TurnFlagComp())
 
+        # Initialize snowglobe.
+        self.globe = SnowGlobe(self.width, self.height, self.create_entity)
+
     def run(self):
         running = True
         while running:
@@ -116,6 +122,7 @@ class Game:
             self.bottom_region.draw(self.screen, DARK_GRAY)
             self.draw_stats(self.weber, is_top_player=True)
             self.draw_stats(self.santa, is_top_player=False)
+            self.globe.shake() 
 
             # Draw entities.
             self.sprite_group.draw(self.screen)

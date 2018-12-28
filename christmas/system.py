@@ -18,6 +18,19 @@ class System:
         raise NotImplementedError
 
 
+class SnowUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, SnowFlagComp]
+
+    def _run(self, entities):
+        # TODO: Perhaps if a player walks over the snow, it disappears or becomes compacted ice.
+        for entity in entities:
+            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, SnowFlagComp)
+            if pos.y == target.y: 
+                continue 
+            pos.x += vel.x 
+            pos.y += vel.y 
+
+
 class WeberUpdateSystem(System):
     COMPS = [VelocityComp, WeberFlagComp]
     MOVE_SPEED = 5.0
@@ -134,6 +147,28 @@ class DeadCleanupSystem(System):
     def _run(self, entities):
         for entity in entities:
             self.game.destroy_entity(entity)
+
+
+class TrespassCleanupSystem(System):
+    COMPS = [PositionComp, PositionBoundComp]
+    TRESPASS_THRESHOLD = 500 # px
+
+    def _run(self, entities):
+        for entity in entities:
+            pos, bound = entity.get_comps(PositionComp, PositionBoundComp)
+            delete = False
+            if bound.x + bound.w + TrespassCleanupSystem.TRESPASS_THRESHOLD < pos.x:
+                delete = True
+            elif pos.x < bound.x - TrespassCleanupSystem.TRESPASS_THRESHOLD:
+                delete = True
+            elif bound.y + bound.h + TrespassCleanupSystem.TRESPASS_THRESHOLD < pos.y:
+                delete = True
+            elif pos.y < bound.y - TrespassCleanupSystem.TRESPASS_THRESHOLD:
+                delete = True
+            
+            if delete:
+                self.game.destroy_entity(entity)
+                print('Deleted trespassing entitiy.')
 
 
 class AnimateUpdateSystem(System):

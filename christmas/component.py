@@ -57,3 +57,8 @@ class SantaFlagComp: pass
 class VelocityAttenuateFlagComp: pass
 
 class DeadFlagComp: pass
+
+class SnowFlagComp: 
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
