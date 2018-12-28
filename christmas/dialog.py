@@ -19,7 +19,7 @@ class DialogWindow:
         self.frame.update(self.screen_region)
 
     def draw(self, screen):
-        self.screen_region.draw(screen, DARK_GRAY)
+        self.screen_region.draw(screen, WHITE)
         self.frame.draw(self.font, self.screen_region, screen)
 
     def set_frame(self, frame):

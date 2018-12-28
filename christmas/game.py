@@ -12,6 +12,7 @@ from .entity import Entity
 from .input_handler import InputHandler
 from .player import Player
 from .santa import Santa
+from .sound import Sound, SoundType
 from .system import *
 from .util import DrawRect
 
@@ -49,14 +50,14 @@ class Game:
     def init(self):
         pg.init()
 
-        # Sound
-        pg.mixer.init()
+        # Game Music and Sound
+        self.sound = Sound()
 
         # Window
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.font = pg.font.SysFont('Consolas', 18)
+        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 16)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
@@ -105,9 +106,9 @@ class Game:
                 system.run()
 
             # Draw game environment.
-            self.top_region.draw(self.screen, RED)
+            self.top_region.draw(self.screen, DARK_GRAY)
             self.dialog_window.draw(self.screen)
-            self.bottom_region.draw(self.screen, GREEN)
+            self.bottom_region.draw(self.screen, DARK_GRAY)
             self.draw_stats(self.top_player)
             self.draw_stats(self.bottom_player)
 
