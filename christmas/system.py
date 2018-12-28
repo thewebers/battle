@@ -1,8 +1,9 @@
+import itertools
+
 from pygame.locals import *
 
 from .component import *
 from .input_handler import InputIntent
-from .santa import CoalProjectile
 
 
 class System:
@@ -50,7 +51,7 @@ class AmmoUpdateSystem(System):
             elif inp_handler.is_key_down(inp_conf.key_map[InputIntent.FIRE]):
                 projectile_cons = ammo.rounds.popleft()
                 projectile = self.game.create_entity()
-                projectile_cons.init(projectile, pos.x, pos.y, vel.x, vel.y)
+                projectile_cons.init(projectile, entity, pos.x, pos.y, vel.x, vel.y)
 
 
 class PositionBoundSystem(System):
@@ -72,6 +73,35 @@ class PositionBoundSystem(System):
             elif intended_pos.y + size.h > bound.y + bound.h:
                 pos.y = bound.y + bound.h - size.h
                 vel.y *= -10
+
+
+class CollideSystem(System):
+    COMPS = [PositionComp, VelocityComp, SizeComp, CollideFlag]
+
+    def _run(self, entities):
+        for (e1, e2) in itertools.combinations(entities, 2):
+            pos1, vel1, size1 = e1.get_comps(PositionComp, VelocityComp, SizeComp)
+            pos2, vel2, size2 = e2.get_comps(PositionComp, VelocityComp, SizeComp)
+            intended_pos1 = PositionComp(pos1.x + vel1.x, pos1.y + vel1.y)
+            intended_pos2 = PositionComp(pos2.x + vel2.x, pos2.y + vel2.y)
+            if (intended_pos1.x < intended_pos2.x + size2.w and
+                intended_pos1.x + size1.w > intended_pos2.x and
+                intended_pos1.y < intended_pos2.y + size2.h and
+                intended_pos1.y + size1.h > intended_pos2.y):
+                if e1.has_comp(ProjectileFlag) and e2.has_comp(PlayerComp):
+                    proj = e1
+                    player = e2
+                elif e2.has_comp(ProjectileFlag) and e1.has_comp(PlayerComp):
+                    proj = e2
+                    player = e1
+                else:
+                    # We're only interested in projectile <-> player collisions.
+                    continue
+
+                if proj.has_comp(OwnerComp) and proj.get_comp(OwnerComp).owner == player:
+                    continue
+                proj.kill()
+                player.get_comp(PlayerComp).curr_health -= 1
 
 
 class PositionUpdateSystem(System):

@@ -25,6 +25,8 @@ class AmmoComp:
     def __init__(self):
         self.rounds = deque()
 
+OwnerComp = namedtuple('OwnerComp', ['owner'])
+
 InputConfigComp = namedtuple('InputConfigComp', ['key_map'])
 
 class PlayerComp:
@@ -64,6 +66,10 @@ class AnimateComp:
         self.delay = delay
 
 # Flags
+
+class CollideFlag: pass
+
+class ProjectileFlag: pass
 
 class BenjaminFlag: pass
 

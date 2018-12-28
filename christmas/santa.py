@@ -60,8 +60,13 @@ class CoalProjectile:
     PROJECTILE_LIFE = 40
 
     @staticmethod
-    def init(entity, x, y, xv, yv):
+    def init(entity, owner, x, y, xv, yv):
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(xv, yv))
+        entity.add_comp(CollideFlag())
+        entity.add_comp(ProjectileFlag())
+        entity.add_comp(OwnerComp(owner))
         entity.add_comp(LifetimeComp(CoalProjectile.PROJECTILE_LIFE))
         entity.add_comp(DrawComp(CoalProjectile.SPRITES))
+        entity.add_comp(SizeComp(CoalProjectile.SPRITES[0].get_width(),
+                                 CoalProjectile.SPRITES[0].get_height()))

@@ -30,6 +30,7 @@ class Game:
             PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
             PositionBoundSystem(self),
+            CollideSystem(self),
             PositionUpdateSystem(self),
             VelocityAttenuateSystem(self),
             LifetimeUpdateSystem(self),
