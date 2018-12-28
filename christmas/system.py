@@ -18,56 +18,71 @@ class System:
         raise NotImplementedError
 
 
-class SnowUpdateSystem(System):
-    COMPS = [PositionComp, VelocityComp, SnowFlagComp]
+class ParticleUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, ParticleComp]
 
     def _run(self, entities):
         # TODO: Perhaps if a player walks over the snow, it disappears or becomes compacted ice.
         for entity in entities:
-            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, SnowFlagComp)
+            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, ParticleComp)
             if pos.y == target.y: 
                 continue 
             pos.x += vel.x 
             pos.y += vel.y 
 
 
-class WeberUpdateSystem(System):
-    COMPS = [VelocityComp, WeberFlagComp]
+class TopPlayerUpdateSystem(System):
+    COMPS = [VelocityComp, TopPlayerFlag]
     MOVE_SPEED = 5.0
 
     def _run(self, entities):
         assert(len(entities) == 1)
+        inp_handler = self.game.get_input_handler()
         for entity in entities:
             vel = entity.get_comp(VelocityComp)
-            if self.game.is_key_pressed(K_w):
-                vel.y -= WeberUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_s):
-                vel.y += WeberUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_a):
-                vel.x -= WeberUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_d):
-                vel.x += WeberUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_w):
+                vel.y -= TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_s):
+                vel.y += TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_a):
+                vel.x -= TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_d):
+                vel.x += TopPlayerUpdateSystem.MOVE_SPEED
 
 
-class SantaUpdateSystem(System):
-    COMPS = [PositionComp, VelocityComp, SantaFlagComp]
+class BottomPlayerUpdateSystem(System):
+    COMPS = [VelocityComp, BottomPlayerFlag]
     MOVE_SPEED = 5.0
 
     def _run(self, entities):
         assert(len(entities) == 1)
+        inp_handler = self.game.get_input_handler()
         for entity in entities:
             pos, vel = entity.get_comps(PositionComp, VelocityComp)
-            if self.game.is_key_pressed(K_UP):
-                vel.y -= SantaUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_DOWN):
-                vel.y += SantaUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_LEFT):
-                vel.x -= SantaUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_RIGHT):
-                vel.x += SantaUpdateSystem.MOVE_SPEED
-            if self.game.is_key_pressed(K_SPACE):
-                coal = self.game.create_entity()
-                CoalProjectile.init(coal, pos.x, pos.y, vel.x, vel.y)
+            if inp_handler.is_key_pressed(K_UP):
+                vel.y -= BottomPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_DOWN):
+                vel.y += BottomPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_LEFT):
+                vel.x -= BottomPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_RIGHT):
+                vel.x += BottomPlayerUpdateSystem.MOVE_SPEED
+
+
+class AmmoUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, AmmoComp]
+
+    def _run(self, entities):
+        inp_handler = self.game.get_input_handler()
+        for entity in entities:
+            pos, vel, ammo = entity.get_comps(PositionComp, VelocityComp, AmmoComp)
+            if len(ammo.rounds) == 0:
+                # They're empty.  Remove their ammo belt.
+                entity.remove_comp(AmmoComp)
+            elif inp_handler.is_key_pressed(K_SPACE):
+                projectile_cons = ammo.rounds.popleft()
+                projectile = self.game.create_entity()
+                projectile_cons.init(projectile, pos.x, pos.y, vel.x, vel.y)
 
 
 class PositionBoundSystem(System):
@@ -102,7 +117,7 @@ class PositionUpdateSystem(System):
 
 
 class VelocityAttenuateSystem(System):
-    COMPS = [VelocityComp, VelocityAttenuateFlagComp]
+    COMPS = [VelocityComp, VelocityAttenuateFlag]
 
     def _run(self, entities):
         VELOCITY_ATTENUATION = 0.5
@@ -142,7 +157,7 @@ class LifetimeUpdateSystem(System):
 
 
 class DeadCleanupSystem(System):
-    COMPS = [DeadFlagComp]
+    COMPS = [DeadFlag]
 
     def _run(self, entities):
         for entity in entities:

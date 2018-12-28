@@ -36,5 +36,5 @@ class SnowGlobe:
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(0.0, 1.0))
         entity.add_comp(PositionBoundComp(pos_bounds))
-        entity.add_comp(SnowFlagComp(target_x, target_y))
+        entity.add_comp(ParticleComp(target_x, target_y))
         entity.add_comp(DrawComp(sprites))

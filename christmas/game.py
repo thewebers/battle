@@ -3,15 +3,17 @@ import random
 import pygame as pg
 from pygame.locals import *
 
-from .sound import Sound, SoundType
+from .benjamin import Benjamin
 from .color import *
 from .component import *
-from .dialog import DialogWindow, QuoteFrame
 from .globe import SnowGlobe
+from .dialog import DialogWindow
+from .director import Director
 from .entity import Entity
+from .input_handler import InputHandler
 from .player import Player
-from .santa import Santa, SantaMug
-from .benjamin import Benjamin, BenjaminMug
+from .santa import Santa
+from .sound import Sound, SoundType
 from .system import *
 from .util import DrawRect
 
@@ -26,9 +28,10 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
-            SnowUpdateSystem(self),
-            WeberUpdateSystem(self),
-            SantaUpdateSystem(self),
+            ParticleUpdateSystem(self),
+            TopPlayerUpdateSystem(self),
+            BottomPlayerUpdateSystem(self),
+            AmmoUpdateSystem(self),
             PositionBoundSystem(self),
             PositionUpdateSystem(self),
             VelocityAttenuateSystem(self),
@@ -40,7 +43,7 @@ class Game:
             DrawUpdateSystem(self)
         ]
         self.entities = []
-        self.pressed_keys = {}
+        self.input_handler = InputHandler()
 
     def start(self):
         """Let the sin... begin."""
@@ -75,42 +78,34 @@ class Game:
 
         # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
-        self.weber = self.create_entity()
-        Benjamin.init(self.weber, weber_x, weber_y, self.top_region)
-        self.weber.get_comp(PositionComp).x -= self.weber.get_comp(SizeComp).w / 2
-        self.weber.get_comp(PositionComp).y -= self.weber.get_comp(SizeComp).h / 2
+        self.top_player = self.create_entity()
+        Benjamin.init(self.top_player, weber_x, weber_y, self.top_region)
+        weber_pos = self.top_player.get_comp(PositionComp)
+        weber_pos.x -= self.top_player.get_comp(SizeComp).w / 2
+        weber_pos.y -= self.top_player.get_comp(SizeComp).h / 2
 
         # Initialize Santa.
         santa_x, santa_y = self.bottom_region.center
-        self.santa = self.create_entity()
-        Santa.init(self.santa, santa_x, santa_y, self.bottom_region)
-        self.santa.get_comp(PositionComp).x -= self.santa.get_comp(SizeComp).w / 2
-        self.santa.get_comp(PositionComp).y -= self.santa.get_comp(SizeComp).h / 2
+        self.bottom_player = self.create_entity()
+        Santa.init(self.bottom_player, santa_x, santa_y, self.bottom_region)
+        santa_pos = self.bottom_player.get_comp(PositionComp)
+        santa_pos.x -= self.bottom_player.get_comp(SizeComp).w / 2
+        santa_pos.y -= self.bottom_player.get_comp(SizeComp).h / 2
 
-        self.current_player = self.santa
-        self.santa.add_comp(TurnFlagComp())
+        # The director needs to be initted *after* the players have been initted.
+        self.director = Director(self)
 
         # Initialize snowglobe.
         self.globe = SnowGlobe(self.width, self.height, self.create_entity)
 
     def run(self):
-        running = True
-        while running:
-            # Poll the events.
-            for event in pg.event.get():
-                if event.type == KEYDOWN:
-                    self.pressed_keys[event.key] = True
-                elif event.type == KEYUP:
-                    self.pressed_keys[event.key] = False
-                # Check if they tryna leave.
-                close_requested = event.type == QUIT
-                close_requested |= self.is_key_pressed(K_ESCAPE)
-                if close_requested:
-                    running = False
+        while True:
+            self.input_handler.update()
+            if self.input_handler.is_close_requested():
+                # End game loop.
+                break
 
-            if self.is_key_pressed(K_TAB):
-                self.switch_turns()
-
+            self.director.update()
             self.dialog_window.update()
             # Run systems.
             for system in self.systems:
@@ -120,8 +115,8 @@ class Game:
             self.top_region.draw(self.screen, DARK_GRAY)
             self.dialog_window.draw(self.screen)
             self.bottom_region.draw(self.screen, DARK_GRAY)
-            self.draw_stats(self.weber, is_top_player=True)
-            self.draw_stats(self.santa, is_top_player=False)
+            self.draw_stats(self.top_player)
+            self.draw_stats(self.bottom_player)
             self.globe.shake() 
 
             # Draw entities.
@@ -133,21 +128,6 @@ class Game:
             # Will make the loop run at the same speed all the time.
             self.clock.tick(FPS)
         pg.quit()
-
-    def switch_turns(self):
-        self.current_player.remove_comp(TurnFlagComp)
-        if self.current_player == self.weber:
-            self.current_player = self.santa
-            sprites = SantaMug.SPRITES
-            quote = random.choice(Santa.QUOTES)
-        elif self.current_player == self.santa:
-            self.current_player = self.weber
-            sprites = BenjaminMug.SPRITES
-            quote = random.choice(Benjamin.QUOTES)
-        else:
-            assert False
-        self.dialog_window.enqueue((QuoteFrame, [self, sprites, quote]))
-        self.current_player.add_comp(TurnFlagComp())
 
     def create_entity(self):
         # TODO: Make generational index allocator.
@@ -164,22 +144,24 @@ class Game:
             entity.get_comp(DrawComp).kill()
         self.entities[entity.ident] = None
 
-    def draw_stats(self, player, is_top_player):
+    def draw_stats(self, player):
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
-        draw_color = WHITE
-        if is_top_player:
+        draw_color = DARK_GRAY
+        if player.has_comp(TopPlayerFlag):
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
             ]
-        else:
+        elif player.has_comp(BottomPlayerFlag):
             pos_args = [
                 lambda _: { 'topright': (pos_bounds.w - PADDING, pos_bounds.y + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },
             ]
+        else:
+            assert False
         player_comp = player.get_comp(PlayerComp)
         health_rect = self.draw_text(f'HEALTH: {player_comp.curr_health} / {player_comp.max_health}', color=draw_color, **(pos_args[0](None)))
         power_rect = self.draw_text(f'POWER: {player_comp.curr_power} / {player_comp.max_power}', color=draw_color, **(pos_args[1](health_rect)))
@@ -198,5 +180,11 @@ class Game:
         self.screen.blit(text_surface, text_rect)
         return text_rect
 
-    def is_key_pressed(self, key):
-        return self.pressed_keys.get(key, False)
+    def get_top_player(self):
+        return self.top_player
+
+    def get_bottom_player(self):
+        return self.bottom_player
+
+    def get_input_handler(self):
+        return self.input_handler
