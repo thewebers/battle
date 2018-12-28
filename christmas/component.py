@@ -1,6 +1,9 @@
-from collections import namedtuple
+from collections import deque, namedtuple
 
 import pygame as pg
+
+
+# Components with Data
 
 class PositionComp:
     def __init__(self, x, y):
@@ -18,6 +21,10 @@ class LifetimeComp:
     def __init__(self, life):
         self.life = life
 
+class AmmoComp:
+    def __init__(self):
+        self.rounds = deque()
+
 class PlayerComp:
     MAX_HEALTH = 10
     MAX_POWER = 10
@@ -31,6 +38,10 @@ class PlayerComp:
         self.curr_drunkenness = 0
         self.max_drunkenness = PlayerComp.MAX_DRUNKENNESS
 
+QuoteComp = namedtuple('QuoteComp', ['quotes'])
+
+MoveSelectComp = namedtuple('MoveSelectComp', ['moves'])
+
 class PositionBoundComp(pg.Rect): pass
 
 class DrawComp(pg.sprite.Sprite):
@@ -43,17 +54,23 @@ class DrawComp(pg.sprite.Sprite):
         self.image = self.images[self.img_idx]
         self.rect = self.image.get_rect()
 
+MugComp = namedtuple('MugComp', ['sprites'])
+
 class AnimateComp:
     def __init__(self, delay):
         self.clock = 0
         self.delay = delay
 
-class TurnFlagComp: pass
+# Flags
 
-class WeberFlagComp: pass
+class BenjaminFlag: pass
 
-class SantaFlagComp: pass
+class SantaFlag: pass
 
-class VelocityAttenuateFlagComp: pass
+class TopPlayerFlag: pass
 
-class DeadFlagComp: pass
+class BottomPlayerFlag: pass
+
+class VelocityAttenuateFlag: pass
+
+class DeadFlag: pass

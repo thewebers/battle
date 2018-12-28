@@ -1,6 +1,6 @@
 import pygame as pg
 
-from .component import DrawComp, DeadFlagComp
+from .component import DrawComp, DeadFlag
 
 
 class Entity:
@@ -9,7 +9,7 @@ class Entity:
         self.comps = {}
 
     def kill(self):
-        self.add_comp(DeadFlagComp())
+        self.add_comp(DeadFlag())
 
     def add_comp(self, comp):
         comp_type = type(comp)

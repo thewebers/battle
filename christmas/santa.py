@@ -1,9 +1,13 @@
+from enum import Enum
+
 import pygame as pg
+from pygame.locals import *
 
 from .component import *
+from .dialog import DialogFrame
 from .entity import Entity
 from .image import load_images
-from .player import Player
+from .player import Player, MoveOption
 
 
 class Santa:
@@ -12,6 +16,11 @@ class Santa:
         'res/img/santa_back_2.png',
         # 'res/santa_front_down.png',
         # 'res/santa_front_up.png',
+    ], scale_factor=4)
+    MUG_ANIM_DELAY = 10
+    MUG_SPRITES = load_images([
+        'res/img/santa_mug_1.png',
+        'res/img/santa_mug_2.png'
     ], scale_factor=4)
     QUOTES = [
         'Get ready for some hot suck of dick!',
@@ -22,32 +31,25 @@ class Santa:
         'Woah. I sure can take a punch.',
         'That all?  I wish... it was.',
         'Yeah sure, spill blood all over my HAND-CRAFTED SUIT?! COME ON!',
-        # TODO: The one's below are actually Luke's.
+        'Coal in yo a-hole',
+        # TODO: The ones below are actually Luke's.
         'Can we smoke a little weed?  My words get better.',
         'When considering intelligence, you can be a retarded professional and still be retarded.'
+    ]
+    MOVES = [
+        MoveOption('[C]oal', K_c),
+        MoveOption('[B]eer', K_b),
+        MoveOption('[R]udolph', K_r),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
         Player.init(entity, x, y, pos_bounds, Santa.SPRITES)
-        entity.add_comp(SantaFlagComp())
-
-
-class SantaMug:
-    ANIM_DELAY = 10
-    SPRITES = load_images([
-        'res/img/santa_mug_1.png',
-        'res/img/santa_mug_2.png'
-    ], scale_factor=4)
-    QUOTES = {
-        'attack': 'Coal in yo a-hole',
-    }
-
-    @staticmethod
-    def init(entity, x, y):
-        entity.add_comp(PositionComp(x, y))
-        entity.add_comp(DrawComp(SantaMug.SPRITES))
-        entity.add_comp(AnimateComp(SantaMug.ANIM_DELAY))
+        entity.add_comp(BottomPlayerFlag())
+        entity.add_comp(SantaFlag())
+        entity.add_comp(MugComp(Santa.MUG_SPRITES))
+        entity.add_comp(QuoteComp(Santa.QUOTES))
+        entity.add_comp(MoveSelectComp(Santa.MOVES))
 
 
 class CoalProjectile:
