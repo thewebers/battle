@@ -25,4 +25,4 @@ class Player:
         entity.add_comp(VelocityAttenuateFlag())
 
 
-MoveOption = namedtuple('MoveOption', ['prompt', 'key'])
+MoveOption = namedtuple('MoveOption', ['prompt', 'key', 'description'])

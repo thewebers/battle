@@ -57,7 +57,7 @@ class Game:
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 16)
+        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 12)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
@@ -106,9 +106,9 @@ class Game:
                 system.run()
 
             # Draw game environment.
-            self.top_region.draw(self.screen, DARK_GRAY)
+            self.top_region.draw(self.screen, GRAY)
             self.dialog_window.draw(self.screen)
-            self.bottom_region.draw(self.screen, DARK_GRAY)
+            self.bottom_region.draw(self.screen, GRAY)
             self.draw_stats(self.top_player)
             self.draw_stats(self.bottom_player)
 

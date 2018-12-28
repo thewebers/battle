@@ -36,7 +36,7 @@ class Sound:
             SoundType.SFX_SPECIAL_SHOT      : load_sounds('res/sound/sfx/special-shot/*'),
         }
         # Start game with fighting music.
-        self.play(SoundType.MUSIC_FIGHT) 
+        self.play(SoundType.MUSIC_FIGHT)
 
     def play(self, sound_type):
         assert(isinstance(sound_type, SoundType))

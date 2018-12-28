@@ -4,6 +4,9 @@ from .color import *
 from .component import *
 from .util import DrawRect
 
+FG_COLOR = DARK_GRAY
+BG_COLOR = WHITE
+
 
 class DialogWindow:
     HEIGHT = 100
@@ -19,7 +22,7 @@ class DialogWindow:
         self.frame.update(self.screen_region)
 
     def draw(self, screen):
-        self.screen_region.draw(screen, WHITE)
+        self.screen_region.draw(screen, BG_COLOR)
         self.frame.draw(self.font, self.screen_region, screen)
 
     def set_frame(self, frame):
@@ -66,7 +69,7 @@ class BasicTextFrame(DialogFrame):
         pass
 
     def draw(self, font, region, screen):
-        dialog = font.render(self.text.upper(), 1, WHITE)
+        dialog = font.render(self.text.upper(), 1, FG_COLOR)
         dialog_rect = dialog.get_rect(center=region.center)
         screen.blit(dialog, dialog_rect)
 
@@ -91,7 +94,7 @@ class MugTextFrame(DialogFrame):
         pos.y = region.centery - draw.rect.h / 2
 
     def draw(self, font, region, screen):
-        dialog = font.render(self.text.upper(), 1, WHITE)
+        dialog = font.render(self.text.upper(), 1, FG_COLOR)
         mugshot_x_offs = self.mug.get_comp(PositionComp).x
         mugshot_x_offs += self.mug.get_comp(DrawComp).rect.w + MugTextFrame.MUG_X_PAD
         mugshot_x_offs += MugTextFrame.MUG_X_PAD

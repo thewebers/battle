@@ -27,13 +27,13 @@ class TopPlayerUpdateSystem(System):
         inp_handler = self.game.get_input_handler()
         for entity in entities:
             vel = entity.get_comp(VelocityComp)
-            if inp_handler.is_key_pressed(K_w):
+            if inp_handler.is_key_down(K_w):
                 vel.y -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_s):
+            if inp_handler.is_key_down(K_s):
                 vel.y += TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_a):
+            if inp_handler.is_key_down(K_a):
                 vel.x -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_d):
+            if inp_handler.is_key_down(K_d):
                 vel.x += TopPlayerUpdateSystem.MOVE_SPEED
 
 
@@ -46,13 +46,13 @@ class BottomPlayerUpdateSystem(System):
         inp_handler = self.game.get_input_handler()
         for entity in entities:
             pos, vel = entity.get_comps(PositionComp, VelocityComp)
-            if inp_handler.is_key_pressed(K_UP):
+            if inp_handler.is_key_down(K_UP):
                 vel.y -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_DOWN):
+            if inp_handler.is_key_down(K_DOWN):
                 vel.y += BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_LEFT):
+            if inp_handler.is_key_down(K_LEFT):
                 vel.x -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_RIGHT):
+            if inp_handler.is_key_down(K_RIGHT):
                 vel.x += BottomPlayerUpdateSystem.MOVE_SPEED
 
 
@@ -66,7 +66,7 @@ class AmmoUpdateSystem(System):
             if len(ammo.rounds) == 0:
                 # They're empty.  Remove their ammo belt.
                 entity.remove_comp(AmmoComp)
-            elif inp_handler.is_key_pressed(K_SPACE):
+            elif inp_handler.is_key_down(K_SPACE):
                 projectile_cons = ammo.rounds.popleft()
                 projectile = self.game.create_entity()
                 projectile_cons.init(projectile, pos.x, pos.y, vel.x, vel.y)

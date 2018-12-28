@@ -26,9 +26,9 @@ class Benjamin:
         'Eat balls!',
     ]
     MOVES = [
-        MoveOption('[B]alls', K_b),
-        MoveOption('[C]had Toss', K_c),
-        MoveOption('Balls [T]wo', K_t),
+        MoveOption('[B]alls', K_b, 'A projectile of BALLS'),
+        MoveOption('[C]had Toss', K_c, 'A big ole football'),
+        MoveOption('Balls [T]wo', K_t, 'A projectile of BALLS (part two)'),
     ]
 
     @staticmethod
