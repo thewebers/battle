@@ -7,6 +7,7 @@ from .component import *
 from .dialog import DialogFrame
 from .entity import Entity
 from .image import load_images
+from .input_handler import BOTTOM_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 
 
@@ -45,6 +46,7 @@ class Santa:
     def init(entity, x, y, pos_bounds):
         Player.init(entity, x, y, pos_bounds, Santa.SPRITES)
         entity.add_comp(BottomPlayerFlag())
+        entity.add_comp(InputConfigComp(BOTTOM_PLAYER_INPUT_CONFIG))
         entity.add_comp(SantaFlag())
         entity.add_comp(MugComp(Santa.MUG_SPRITES))
         entity.add_comp(QuoteComp(Santa.QUOTES))

@@ -27,8 +27,7 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
-            TopPlayerUpdateSystem(self),
-            BottomPlayerUpdateSystem(self),
+            PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
             PositionBoundSystem(self),
             PositionUpdateSystem(self),

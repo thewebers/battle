@@ -25,6 +25,8 @@ class AmmoComp:
     def __init__(self):
         self.rounds = deque()
 
+InputConfigComp = namedtuple('InputConfigComp', ['key_map'])
+
 class PlayerComp:
     MAX_HEALTH = 10
     MAX_POWER = 10

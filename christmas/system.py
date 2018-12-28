@@ -1,6 +1,7 @@
 from pygame.locals import *
 
 from .component import *
+from .input_handler import InputIntent
 from .santa import CoalProjectile
 
 
@@ -18,55 +19,35 @@ class System:
         raise NotImplementedError
 
 
-class TopPlayerUpdateSystem(System):
-    COMPS = [VelocityComp, TopPlayerFlag]
+class PlayerUpdateSystem(System):
+    COMPS = [VelocityComp, InputConfigComp]
     MOVE_SPEED = 5.0
 
     def _run(self, entities):
-        assert(len(entities) == 1)
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            vel = entity.get_comp(VelocityComp)
-            if inp_handler.is_key_down(K_w):
-                vel.y -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_s):
-                vel.y += TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_a):
-                vel.x -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_d):
-                vel.x += TopPlayerUpdateSystem.MOVE_SPEED
-
-
-class BottomPlayerUpdateSystem(System):
-    COMPS = [VelocityComp, BottomPlayerFlag]
-    MOVE_SPEED = 5.0
-
-    def _run(self, entities):
-        assert(len(entities) == 1)
-        inp_handler = self.game.get_input_handler()
-        for entity in entities:
-            pos, vel = entity.get_comps(PositionComp, VelocityComp)
-            if inp_handler.is_key_down(K_UP):
-                vel.y -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_DOWN):
-                vel.y += BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_LEFT):
-                vel.x -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_down(K_RIGHT):
-                vel.x += BottomPlayerUpdateSystem.MOVE_SPEED
+            vel, inp_conf = entity.get_comps(VelocityComp, InputConfigComp)
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.UP]):
+                vel.y -= PlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.DOWN]):
+                vel.y += PlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.LEFT]):
+                vel.x -= PlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.RIGHT]):
+                vel.x += PlayerUpdateSystem.MOVE_SPEED
 
 
 class AmmoUpdateSystem(System):
-    COMPS = [PositionComp, VelocityComp, AmmoComp]
+    COMPS = [PositionComp, VelocityComp, AmmoComp, InputConfigComp]
 
     def _run(self, entities):
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            pos, vel, ammo = entity.get_comps(PositionComp, VelocityComp, AmmoComp)
+            pos, vel, ammo, inp_conf = entity.get_comps(PositionComp, VelocityComp, AmmoComp, InputConfigComp)
             if len(ammo.rounds) == 0:
                 # They're empty.  Remove their ammo belt.
                 entity.remove_comp(AmmoComp)
-            elif inp_handler.is_key_down(K_SPACE):
+            elif inp_handler.is_key_down(inp_conf.key_map[InputIntent.FIRE]):
                 projectile_cons = ammo.rounds.popleft()
                 projectile = self.game.create_entity()
                 projectile_cons.init(projectile, pos.x, pos.y, vel.x, vel.y)
@@ -115,23 +96,6 @@ class VelocityAttenuateSystem(System):
             vel.y *= VELOCITY_ATTENUATION
 
 
-class PlayerAnimateUpdateSystem(System):
-    COMPS = [VelocityComp, DrawComp, AnimateComp]
-    # Number of ticks to wait between animation frames
-    IDLE_ANIM_DELAY = 5
-    MOVING_ANIM_DELAY = 2
-    IDLE_VELOCITY_THRESHOLD = 0.1
-
-    def _run(self, entities):
-        for entity in entities:
-            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
-            if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
-                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
-                anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
-            else:
-                anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
-
-
 class LifetimeUpdateSystem(System):
     COMPS = [LifetimeComp]
 
@@ -149,6 +113,23 @@ class DeadCleanupSystem(System):
     def _run(self, entities):
         for entity in entities:
             self.game.destroy_entity(entity)
+
+
+class PlayerAnimateUpdateSystem(System):
+    COMPS = [VelocityComp, DrawComp, AnimateComp]
+    # Number of ticks to wait between animation frames
+    IDLE_ANIM_DELAY = 5
+    MOVING_ANIM_DELAY = 2
+    IDLE_VELOCITY_THRESHOLD = 0.1
+
+    def _run(self, entities):
+        for entity in entities:
+            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
+            if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
+                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
+                anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
+            else:
+                anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
 
 
 class AnimateUpdateSystem(System):

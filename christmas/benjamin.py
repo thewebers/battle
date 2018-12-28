@@ -8,6 +8,7 @@ from .component import *
 from .dialog import DialogFrame
 from .entity import Entity
 from .image import load_images
+from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 from .santa import CoalProjectile
 
@@ -35,6 +36,7 @@ class Benjamin:
     def init(entity, x, y, pos_bounds):
         Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES)
         entity.add_comp(TopPlayerFlag())
+        entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(BenjaminFlag())
         entity.add_comp(MugComp(Benjamin.MUG_SPRITES))
         entity.add_comp(QuoteComp(Benjamin.QUOTES))
