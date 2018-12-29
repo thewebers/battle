@@ -20,7 +20,10 @@ class SoundType(Enum):
 
 
 class Sound:
-    def __init__(self):
+    def __init__(self, debug_mode=False):
+        self._debug_mode = debug_mode
+        if self._debug_mode:
+            return
         # Initialize mixer.
         pg.mixer.init()
         # Load `Sound` objects into memory.
@@ -36,9 +39,11 @@ class Sound:
             SoundType.SFX_SPECIAL_SHOT      : load_sounds('res/sound/sfx/special-shot/*'),
         }
         # Start game with fighting music.
-        self.play(SoundType.MUSIC_FIGHT) 
+        self.play(SoundType.MUSIC_FIGHT)
 
     def play(self, sound_type):
+        if self._debug_mode:
+            return
         assert(isinstance(sound_type, SoundType))
         # NOTE: There's a pg.mixer.music.queue method for song queues.
         random.choice(self._sounds[sound_type]).play()

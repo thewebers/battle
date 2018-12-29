@@ -1,7 +1,9 @@
+import itertools
+
 from pygame.locals import *
 
 from .component import *
-from .santa import CoalProjectile
+from .input_handler import InputIntent
 
 
 class System:
@@ -18,13 +20,13 @@ class System:
         raise NotImplementedError
 
 
-class ParticleUpdateSystem(System):
-    COMPS = [PositionComp, VelocityComp, ParticleComp]
+class SnowParticleUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, SnowTargetComp]
 
     def _run(self, entities):
         # TODO: Perhaps if a player walks over the snow, it disappears or becomes compacted ice.
         for entity in entities:
-            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, ParticleComp)
+            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, SnowTargetComp)
             if pos.y == target.y: 
                 vel.x = 0
                 vel.y = 0
@@ -51,60 +53,89 @@ class TopPlayerUpdateSystem(System):
                 vel.x += TopPlayerUpdateSystem.MOVE_SPEED
 
 
-class BottomPlayerUpdateSystem(System):
-    COMPS = [VelocityComp, BottomPlayerFlag]
-    MOVE_SPEED = 5.0
+class PlayerUpdateSystem(System):
+    COMPS = [VelocityComp, MoveSpeedComp, InputConfigComp]
 
     def _run(self, entities):
-        assert(len(entities) == 1)
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            pos, vel = entity.get_comps(PositionComp, VelocityComp)
-            if inp_handler.is_key_pressed(K_UP):
-                vel.y -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_DOWN):
-                vel.y += BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_LEFT):
-                vel.x -= BottomPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_RIGHT):
-                vel.x += BottomPlayerUpdateSystem.MOVE_SPEED
+            vel, speed, inp_conf = entity.get_comps(VelocityComp, MoveSpeedComp, InputConfigComp)
+            speed = speed.speed
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.UP]):
+                vel.y -= speed
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.DOWN]):
+                vel.y += speed
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.LEFT]):
+                vel.x -= speed
+            if inp_handler.is_key_down(inp_conf.key_map[InputIntent.RIGHT]):
+                vel.x += speed
 
 
 class AmmoUpdateSystem(System):
-    COMPS = [PositionComp, VelocityComp, AmmoComp]
+    COMPS = [PositionComp, VelocityComp, AmmoComp, InputConfigComp]
 
     def _run(self, entities):
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            pos, vel, ammo = entity.get_comps(PositionComp, VelocityComp, AmmoComp)
+            pos, vel, ammo, inp_conf = entity.get_comps(PositionComp, VelocityComp, AmmoComp, InputConfigComp)
             if len(ammo.rounds) == 0:
                 # They're empty.  Remove their ammo belt.
                 entity.remove_comp(AmmoComp)
-            elif inp_handler.is_key_pressed(K_SPACE):
+            elif inp_handler.is_key_pressed(inp_conf.key_map[InputIntent.FIRE]):
                 projectile_cons = ammo.rounds.popleft()
                 projectile = self.game.create_entity()
-                projectile_cons.init(projectile, pos.x, pos.y, vel.x, vel.y)
+                projectile_cons.init(projectile, entity, pos.x, pos.y, vel.x, vel.y)
 
 
-class PositionBoundSystem(System):
-    COMPS = [PositionComp, VelocityComp, SizeComp, PositionBoundComp]
+class PositionBoundBounceSystem(System):
+    COMPS = [PositionComp, VelocityComp, SizeComp, PositionBoundComp, PositionBoundBounceMultiplierComp]
 
     def _run(self, entities):
         for entity in entities:
-            pos, vel, size, bound = entity.get_comps(PositionComp, VelocityComp, SizeComp, PositionBoundComp)
+            pos, vel, size, bound, mult = entity.get_comps(PositionComp, VelocityComp, SizeComp, PositionBoundComp, PositionBoundBounceMultiplierComp)
+            mult = mult.multiplier
             intended_pos = PositionComp(pos.x + vel.x, pos.y + vel.y)
             if intended_pos.x < bound.x:
                 pos.x = bound.x
-                vel.x *= -10
+                vel.x *= -mult
             elif intended_pos.x + size.w > bound.x + bound.w:
                 pos.x = bound.x + bound.w - size.w
-                vel.x *= -10
+                vel.x *= -mult
             if intended_pos.y < bound.y:
                 pos.y = bound.y
-                vel.y *= -10
+                vel.y *= -mult
             elif intended_pos.y + size.h > bound.y + bound.h:
                 pos.y = bound.y + bound.h - size.h
-                vel.y *= -10
+                vel.y *= -mult
+
+
+class CollideSystem(System):
+    COMPS = [PositionComp, VelocityComp, SizeComp, CollideFlag]
+
+    def _run(self, entities):
+        for (e1, e2) in itertools.combinations(entities, 2):
+            pos1, vel1, size1 = e1.get_comps(PositionComp, VelocityComp, SizeComp)
+            pos2, vel2, size2 = e2.get_comps(PositionComp, VelocityComp, SizeComp)
+            intended_pos1 = PositionComp(pos1.x + vel1.x, pos1.y + vel1.y)
+            intended_pos2 = PositionComp(pos2.x + vel2.x, pos2.y + vel2.y)
+            if (intended_pos1.x < intended_pos2.x + size2.w and
+                intended_pos1.x + size1.w > intended_pos2.x and
+                intended_pos1.y < intended_pos2.y + size2.h and
+                intended_pos1.y + size1.h > intended_pos2.y):
+                if e1.has_comp(ProjectileFlag) and e2.has_comp(PlayerComp):
+                    proj = e1
+                    player = e2
+                elif e2.has_comp(ProjectileFlag) and e1.has_comp(PlayerComp):
+                    proj = e2
+                    player = e1
+                else:
+                    # We're only interested in projectile <-> player collisions.
+                    continue
+
+                if proj.has_comp(OwnerComp) and proj.get_comp(OwnerComp).owner == player:
+                    continue
+                proj.kill()
+                player.get_comp(PlayerComp).curr_health -= 1
 
 
 class PositionUpdateSystem(System):
@@ -129,23 +160,6 @@ class VelocityAttenuateSystem(System):
             vel.y *= VELOCITY_ATTENUATION
 
 
-class PlayerAnimateUpdateSystem(System):
-    COMPS = [VelocityComp, DrawComp, AnimateComp]
-    # Number of ticks to wait between animation frames
-    IDLE_ANIM_DELAY = 5
-    MOVING_ANIM_DELAY = 2
-    IDLE_VELOCITY_THRESHOLD = 0.1
-
-    def _run(self, entities):
-        for entity in entities:
-            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
-            if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
-                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
-                anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
-            else:
-                anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
-
-
 class LifetimeUpdateSystem(System):
     COMPS = [LifetimeComp]
 
@@ -154,6 +168,21 @@ class LifetimeUpdateSystem(System):
             lifetime = entity.get_comp(LifetimeComp)
             lifetime.life -= 1
             if lifetime.life <= 0:
+                entity.kill()
+
+
+class OutOfBoundsCleanupSystem(System):
+    COMPS = [PositionComp, PositionBoundComp, OutOfBoundsKillFlag]
+    # How far away the entity needs to go out of bounds before being killed
+    DISTANCE_THRESHOLD = 500 # px
+
+    def _run(self, entities):
+        for entity in entities:
+            pos, bound = entity.get_comps(PositionComp, PositionBoundComp)
+            if (bound.x + bound.w + OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD < pos.x or
+                pos.x < bound.x - OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD or
+                bound.y + bound.h + OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD < pos.y or
+                pos.y < bound.y - OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD):
                 entity.kill()
 
 
@@ -187,6 +216,23 @@ class OutOfBoundsCleanupSystem(System):
             if delete:
                 print('Delete time :)')
                 self.game.destroy_entity(entity)
+
+
+class PlayerAnimateUpdateSystem(System):
+    COMPS = [VelocityComp, DrawComp, AnimateComp]
+    # Number of ticks to wait between animation frames
+    IDLE_ANIM_DELAY = 5
+    MOVING_ANIM_DELAY = 2
+    IDLE_VELOCITY_THRESHOLD = 0.1
+
+    def _run(self, entities):
+        for entity in entities:
+            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
+            if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
+                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
+                anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
+            else:
+                anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
 
 
 class AnimateUpdateSystem(System):

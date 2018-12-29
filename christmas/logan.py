@@ -12,18 +12,19 @@ from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 
 
-class Benjamin:
+class Logan:
     SPRITES = load_images([
-        'res/img/ben_1.png',
-        'res/img/ben_2.png'
+        'res/img/logan_1.png',
+        'res/img/logan_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/ben_mug_1.png',
-        'res/img/ben_mug_2.png'
+        'res/img/logan_mug_1.png',
+        'res/img/logan_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
     QUOTES = [
-        'Eat balls!',
+        'Eat carpel toobley!',
+        'I\'m very ready to zonk right about now.',
     ]
     MOVES = [
         MoveOption('[B]alls', K_b, 'A projectile of BALLS'),
@@ -33,10 +34,10 @@ class Benjamin:
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES)
+        Player.init(entity, x, y, pos_bounds, Logan.SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
-        entity.add_comp(BenjaminFlag())
-        entity.add_comp(MugComp(Benjamin.MUG_SPRITES))
-        entity.add_comp(QuoteComp(Benjamin.QUOTES))
-        entity.add_comp(MoveSelectComp(Benjamin.MOVES))
+        entity.add_comp(LoganFlag())
+        entity.add_comp(MugComp(Logan.MUG_SPRITES))
+        entity.add_comp(QuoteComp(Logan.QUOTES))
+        entity.add_comp(MoveSelectComp(Logan.MOVES))

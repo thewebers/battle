@@ -4,6 +4,7 @@ import pygame as pg
 from pygame.locals import *
 
 from .benjamin import Benjamin
+from .logan import Logan
 from .color import *
 from .component import *
 from .globe import SnowGlobe
@@ -12,6 +13,7 @@ from .director import Director
 from .entity import Entity
 from .input_handler import InputHandler
 from .player import Player
+from .projectile import Projectile
 from .santa import Santa
 from .sound import Sound, SoundType
 from .system import *
@@ -24,23 +26,29 @@ class Game:
     """Handles all game logic and interfaces with UI via pygame."""
     title = 'Another Ordinary Weber Christmas'
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, debug_mode=False):
+        self._debug_mode = debug_mode
         self.width = width
         self.height = height
         self.systems = [
-            ParticleUpdateSystem(self),
-            TopPlayerUpdateSystem(self),
-            BottomPlayerUpdateSystem(self),
+            SnowParticleUpdateSystem(self),
+            PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
-            PositionBoundSystem(self),
+            PositionBoundBounceSystem(self),
+            CollideSystem(self),
             PositionUpdateSystem(self),
             VelocityAttenuateSystem(self),
             LifetimeUpdateSystem(self),
+            OutOfBoundsCleanupSystem(self),
             DeadCleanupSystem(self),
             OutOfBoundsCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self)
+        ]
+        self.webers = [
+            Benjamin,
+            Logan
         ]
         self.entities = []
         self.input_handler = InputHandler()
@@ -54,13 +62,13 @@ class Game:
         pg.init()
 
         # Game Music and Sound
-        self.sound = Sound()
+        self.sound = Sound(debug_mode=self._debug_mode)
 
         # Window
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 16)
+        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 12)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
@@ -76,10 +84,13 @@ class Game:
         self.sprite_group = pg.sprite.RenderUpdates()
         DrawComp.groups = self.sprite_group
 
+        # Static Initialization
+        Projectile.static_init(self.width, self.height)
+
         # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
         self.top_player = self.create_entity()
-        Benjamin.init(self.top_player, weber_x, weber_y, self.top_region)
+        random.choice(self.webers).init(self.top_player, weber_x, weber_y, self.top_region)
         weber_pos = self.top_player.get_comp(PositionComp)
         weber_pos.x -= self.top_player.get_comp(SizeComp).w / 2
         weber_pos.y -= self.top_player.get_comp(SizeComp).h / 2
@@ -96,7 +107,7 @@ class Game:
         self.director = Director(self)
 
         # Initialize snowglobe.
-        self.globe = SnowGlobe(self.width, self.height, self.create_entity)
+        self.globe = SnowGlobe(self.width, self.height, self.create_entity, debug_mode=self._debug_mode)
 
     def run(self):
         while True:
@@ -112,12 +123,12 @@ class Game:
                 system.run()
 
             # Draw game environment.
-            self.top_region.draw(self.screen, DARK_GRAY)
+            self.top_region.draw(self.screen, GRAY)
             self.dialog_window.draw(self.screen)
-            self.bottom_region.draw(self.screen, DARK_GRAY)
+            self.bottom_region.draw(self.screen, GRAY)
             self.draw_stats(self.top_player)
             self.draw_stats(self.bottom_player)
-            self.globe.shake() 
+            self.globe.shake()
 
             # Draw entities.
             self.sprite_group.draw(self.screen)

@@ -4,6 +4,7 @@ import random
 from .benjamin import Benjamin
 from .component import *
 from .dialog import EmptyFrame, BasicTextFrame, MugTextFrame
+from .projectile import CoalProjectile
 from .santa import Santa
 
 
@@ -103,7 +104,9 @@ class MoveBeginState(State):
         self.player = player
         self.move = move
         self.remaining_time = MoveBeginState.STATE_DURATION
-        self.game.dialog_window.set_frame(MugTextFrame(self.game, self.player, self.move.prompt))
+        self.game.dialog_window.set_frame(MugTextFrame(self.game, self.player, self.move.description))
+        for _ in range(3):
+            self.player.force_get_comp(AmmoComp).rounds.append(CoalProjectile)
 
     def update(self):
         self.remaining_time -= 1

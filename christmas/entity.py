@@ -34,6 +34,19 @@ class Entity:
     def has_comp(self, comp_type):
         return comp_type in self.comps
 
+    def force_get_comp(self, comp_type):
+        """Force gets a component of `comp_type` from this entity.
+
+        If this entity doesn't already have a component of `comp_type`, creates
+        an instance, then returns it.  Otherwise, simply returns the previously
+        existing component.
+
+        Components of `comp_type` must be constructible with no args.
+        """
+        if not self.has_comp(comp_type):
+            self.add_comp(comp_type())
+        return self.get_comp(comp_type)
+
     def get_comp(self, comp_type):
         return self.comps[comp_type]
 

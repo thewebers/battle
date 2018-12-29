@@ -15,6 +15,10 @@ class VelocityComp:
         self.x = x
         self.y = y
 
+class MoveSpeedComp:
+    def __init__(self, speed):
+        self.speed = speed
+
 SizeComp = namedtuple('SizeComp', ['w', 'h'])
 
 class LifetimeComp:
@@ -24,6 +28,10 @@ class LifetimeComp:
 class AmmoComp:
     def __init__(self):
         self.rounds = deque()
+
+OwnerComp = namedtuple('OwnerComp', ['owner'])
+
+InputConfigComp = namedtuple('InputConfigComp', ['key_map'])
 
 class PlayerComp:
     MAX_HEALTH = 10
@@ -44,6 +52,8 @@ MoveSelectComp = namedtuple('MoveSelectComp', ['moves'])
 
 class PositionBoundComp(pg.Rect): pass
 
+PositionBoundBounceMultiplierComp = namedtuple('PositionBoundBounceMultiplierComp', ['multiplier'])
+
 class OutOfBoundsComp(pg.Rect): pass
 
 class DrawComp(pg.sprite.Sprite):
@@ -63,14 +73,20 @@ class AnimateComp:
         self.clock = 0
         self.delay = delay
 
-class ParticleComp: 
+class SnowTargetComp:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
 # Flags
 
+class CollideFlag: pass
+
+class ProjectileFlag: pass
+
 class BenjaminFlag: pass
+
+class LoganFlag: pass
 
 class SantaFlag: pass
 
@@ -79,6 +95,8 @@ class TopPlayerFlag: pass
 class BottomPlayerFlag: pass
 
 class VelocityAttenuateFlag: pass
+
+class OutOfBoundsKillFlag: pass
 
 class DeadFlag: pass
 
