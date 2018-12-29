@@ -26,7 +26,8 @@ class ParticleUpdateSystem(System):
         for entity in entities:
             pos, vel, target = entity.get_comps(PositionComp, VelocityComp, ParticleComp)
             if pos.y == target.y: 
-                continue 
+                vel.x = 0
+                vel.y = 0
             pos.x += vel.x 
             pos.y += vel.y 
 
@@ -164,26 +165,28 @@ class DeadCleanupSystem(System):
             self.game.destroy_entity(entity)
 
 
-class TrespassCleanupSystem(System):
-    COMPS = [PositionComp, PositionBoundComp]
+class OutOfBoundsCleanupSystem(System):
+    COMPS = [PositionComp, SizeComp, VelocityComp, OutOfBoundsComp]
     TRESPASS_THRESHOLD = 500 # px
 
     def _run(self, entities):
         for entity in entities:
-            pos, bound = entity.get_comps(PositionComp, PositionBoundComp)
+            pos, vel, size, bound = entity.get_comps(PositionComp, VelocityComp, SizeComp, OutOfBoundsComp)
+            intended_pos = PositionComp(pos.x + vel.x, pos.y + vel.y)
+
             delete = False
-            if bound.x + bound.w + TrespassCleanupSystem.TRESPASS_THRESHOLD < pos.x:
+            if intended_pos.x < bound.x:
                 delete = True
-            elif pos.x < bound.x - TrespassCleanupSystem.TRESPASS_THRESHOLD:
+            elif intended_pos.x + size.w > bound.x + bound.w:
                 delete = True
-            elif bound.y + bound.h + TrespassCleanupSystem.TRESPASS_THRESHOLD < pos.y:
+            if intended_pos.y < bound.y:
                 delete = True
-            elif pos.y < bound.y - TrespassCleanupSystem.TRESPASS_THRESHOLD:
+            elif intended_pos.y + size.h > bound.y + bound.h:
                 delete = True
             
             if delete:
+                print('Delete time :)')
                 self.game.destroy_entity(entity)
-                print('Deleted trespassing entitiy.')
 
 
 class AnimateUpdateSystem(System):

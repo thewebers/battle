@@ -7,8 +7,9 @@ from .util import DrawRect
 
 
 class SnowGlobe:
-    COLORS = [(255,) * 3, (240,) * 3] 
-    DIMEN  = (1, 1)
+    COLORS = [(255,) * 3, (220,) * 3] 
+    DIMEN  = (2,) * 2
+    OOB_PADDING = 50 # px
 
     def __init__(self, w, h, create_entitiy):
         self.w = w
@@ -25,16 +26,20 @@ class SnowGlobe:
         """Spawn snow entities."""
         t = pg.time.get_ticks()
 
-        # TODO: Correct and loop this, make more intense with greater t.
-
+        if t % 1000 != 0:
+            return
+        
         x, y = (random.randint(0, self.w + 1), 0)
         target_x, target_y = (x, random.randint(0, self.h + 1))
         sprites = [self.create_snowflake()]
-        pos_bounds = DrawRect(0, 0, self.w, self.h)
+        bounds = DrawRect(-SnowGlobe.OOB_PADDING, -SnowGlobe.OOB_PADDING, \
+                          self.w + SnowGlobe.OOB_PADDING, self.h + SnowGlobe.OOB_PADDING)
 
+        # Create entity with components.
         entity = self.create_entitiy()
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(0.0, 1.0))
-        entity.add_comp(PositionBoundComp(pos_bounds))
+        entity.add_comp(SizeComp(*SnowGlobe.DIMEN))
+        entity.add_comp(OutOfBoundsComp(bounds))
         entity.add_comp(ParticleComp(target_x, target_y))
         entity.add_comp(DrawComp(sprites))

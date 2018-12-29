@@ -37,7 +37,7 @@ class Game:
             VelocityAttenuateSystem(self),
             LifetimeUpdateSystem(self),
             DeadCleanupSystem(self),
-            TrespassCleanupSystem(self),
+            OutOfBoundsCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self)

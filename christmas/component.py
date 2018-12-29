@@ -44,6 +44,8 @@ MoveSelectComp = namedtuple('MoveSelectComp', ['moves'])
 
 class PositionBoundComp(pg.Rect): pass
 
+class OutOfBoundsComp(pg.Rect): pass
+
 class DrawComp(pg.sprite.Sprite):
     def __init__(self, images):
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -79,3 +81,4 @@ class BottomPlayerFlag: pass
 class VelocityAttenuateFlag: pass
 
 class DeadFlag: pass
+
