@@ -24,20 +24,19 @@ class Logan:
     MUG_ANIM_DELAY = 10
     QUOTES = [
         'Eat carpel toobley!',
-        'I\'m very ready to zonk right about now.',
+        'I\'m very ready to zonk right about now. Zzzzz.',
     ]
     MOVES = [
-        MoveOption('[B]alls', K_b, 'A projectile of BALLS'),
-        MoveOption('[C]had Toss', K_c, 'A big ole football'),
-        MoveOption('Balls [T]wo', K_t, 'A projectile of BALLS (part two)'),
+        MoveOption('[B]alls', 'A projectile of BALLS'),
+        MoveOption('[C]had Toss', 'A big ole football'),
+        MoveOption('Balls [T]wo', 'A projectile of BALLS (part two)'),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Logan.SPRITES)
+        Player.init(entity, x, y, pos_bounds, Logan.SPRITES,
+                    Logan.NAME, Logan.QUOTES, Logan.MOVES,
+                    Logan.MUG_SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(LoganFlag())
-        entity.add_comp(MugComp(Logan.MUG_SPRITES))
-        entity.add_comp(QuoteComp(Logan.QUOTES))
-        entity.add_comp(MoveSelectComp(Logan.MOVES))
