@@ -68,7 +68,7 @@ class Game:
         self.screen = pg.display.set_mode((self.width, self.height))
         pg.display.set_caption(self.title)
         pg.mouse.set_visible(False)
-        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 12)
+        self.font = pg.font.Font('res/font/8-bitpusab.ttf', 10)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.

@@ -15,6 +15,13 @@ class InputIntent(Enum):
     CHOOSE_MOVE_THREE = 7
 
 
+CHOICE_INTENTS = [
+    InputIntent.CHOOSE_MOVE_ONE,
+    InputIntent.CHOOSE_MOVE_TWO,
+    InputIntent.CHOOSE_MOVE_THREE,
+]
+
+
 TOP_PLAYER_INPUT_CONFIG = {
     InputIntent.UP: K_w,
     InputIntent.DOWN: K_s,
@@ -33,9 +40,9 @@ BOTTOM_PLAYER_INPUT_CONFIG = {
     InputIntent.LEFT: K_LEFT,
     InputIntent.RIGHT: K_RIGHT,
     InputIntent.FIRE: K_COMMA,
-    InputIntent.CHOOSE_MOVE_ONE: K_k,
-    InputIntent.CHOOSE_MOVE_TWO: K_l,
-    InputIntent.CHOOSE_MOVE_THREE: K_SEMICOLON,
+    InputIntent.CHOOSE_MOVE_ONE: K_j,
+    InputIntent.CHOOSE_MOVE_TWO: K_k,
+    InputIntent.CHOOSE_MOVE_THREE: K_l,
 }
 
 

@@ -23,6 +23,7 @@ class Santa:
         'res/img/santa_mug_1.png',
         'res/img/santa_mug_2.png'
     ], scale_factor=4)
+    NAME = 'Santa'
     QUOTES = [
         'Get ready for some hot suck of dick!',
         'Hey, you came here to fight!',
@@ -37,17 +38,16 @@ class Santa:
         'When considering intelligence, you can be a retarded professional and still be retarded.'
     ]
     MOVES = [
-        MoveOption('[C]oal', K_c, 'Coal in yo a-hole'),
-        MoveOption('[B]eer', K_b, 'Get fukn turnt, kids'),
-        MoveOption('[R]udolph', K_r, 'Eat red nose, nerd'),
+        MoveOption('Coal', 'Coal in yo a-hole'),
+        MoveOption('Beer', 'Get fukn turnt, kids'),
+        MoveOption('Rudolph', 'Eat red nose, nerd'),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Santa.SPRITES)
+        Player.init(entity, x, y, pos_bounds, Santa.SPRITES,
+                    Santa.NAME, Santa.QUOTES, Santa.MOVES,
+                    Santa.MUG_SPRITES)
         entity.add_comp(BottomPlayerFlag())
         entity.add_comp(InputConfigComp(BOTTOM_PLAYER_INPUT_CONFIG))
         entity.add_comp(SantaFlag())
-        entity.add_comp(MugComp(Santa.MUG_SPRITES))
-        entity.add_comp(QuoteComp(Santa.QUOTES))
-        entity.add_comp(MoveSelectComp(Santa.MOVES))
