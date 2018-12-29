@@ -6,6 +6,7 @@ from pygame.locals import *
 from .benjamin import Benjamin
 from .color import *
 from .component import *
+from .globe import SnowGlobe
 from .dialog import DialogWindow
 from .director import Director
 from .entity import Entity
@@ -27,6 +28,7 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
+            SnowParticleUpdateSystem(self),
             PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
             PositionBoundSystem(self),
@@ -34,6 +36,7 @@ class Game:
             PositionUpdateSystem(self),
             VelocityAttenuateSystem(self),
             LifetimeUpdateSystem(self),
+            OutOfBoundsCleanupSystem(self),
             DeadCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
@@ -92,6 +95,9 @@ class Game:
         # The director needs to be initted *after* the players have been initted.
         self.director = Director(self)
 
+        # Initialize snowglobe.
+        self.globe = SnowGlobe(self.width, self.height, self.create_entity)
+
     def run(self):
         while True:
             self.input_handler.update()
@@ -111,6 +117,7 @@ class Game:
             self.bottom_region.draw(self.screen, GRAY)
             self.draw_stats(self.top_player)
             self.draw_stats(self.bottom_player)
+            self.globe.shake()
 
             # Draw entities.
             self.sprite_group.draw(self.screen)

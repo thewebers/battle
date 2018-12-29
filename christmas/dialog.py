@@ -4,7 +4,7 @@ from .color import *
 from .component import *
 from .util import DrawRect
 
-FG_COLOR = DARK_GRAY
+FG_COLOR = BLACK
 BG_COLOR = WHITE
 
 

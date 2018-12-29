@@ -20,6 +20,19 @@ class System:
         raise NotImplementedError
 
 
+class SnowParticleUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, SnowTargetComp]
+
+    def _run(self, entities):
+        # TODO: Perhaps if a player walks over the snow, it disappears or becomes compacted ice.
+        for entity in entities:
+            pos, vel, target = entity.get_comps(PositionComp, VelocityComp, SnowTargetComp)
+            if pos.y == target.y:
+                continue
+            pos.x += vel.x
+            pos.y += vel.y
+
+
 class PlayerUpdateSystem(System):
     COMPS = [VelocityComp, InputConfigComp]
     MOVE_SPEED = 5.0
@@ -134,6 +147,21 @@ class LifetimeUpdateSystem(System):
             lifetime = entity.get_comp(LifetimeComp)
             lifetime.life -= 1
             if lifetime.life <= 0:
+                entity.kill()
+
+
+class OutOfBoundsCleanupSystem(System):
+    COMPS = [PositionComp, PositionBoundComp, OutOfBoundsKillFlag]
+    # How far away the entity needs to go out of bounds before being killed
+    DISTANCE_THRESHOLD = 500 # px
+
+    def _run(self, entities):
+        for entity in entities:
+            pos, bound = entity.get_comps(PositionComp, PositionBoundComp)
+            if (bound.x + bound.w + OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD < pos.x or
+                pos.x < bound.x - OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD or
+                bound.y + bound.h + OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD < pos.y or
+                pos.y < bound.y - OutOfBoundsCleanupSystem.DISTANCE_THRESHOLD):
                 entity.kill()
 
 

@@ -65,6 +65,11 @@ class AnimateComp:
         self.clock = 0
         self.delay = delay
 
+class SnowTargetComp:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
 # Flags
 
 class CollideFlag: pass
@@ -80,5 +85,7 @@ class TopPlayerFlag: pass
 class BottomPlayerFlag: pass
 
 class VelocityAttenuateFlag: pass
+
+class OutOfBoundsKillFlag: pass
 
 class DeadFlag: pass
