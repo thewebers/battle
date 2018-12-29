@@ -4,7 +4,8 @@ import random
 from .benjamin import Benjamin
 from .component import *
 from .dialog import EmptyFrame, BasicTextFrame, MugTextFrame
-from .santa import CoalProjectile, Santa
+from .projectile import CoalProjectile
+from .santa import Santa
 
 
 class Director:

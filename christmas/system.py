@@ -34,21 +34,21 @@ class SnowParticleUpdateSystem(System):
 
 
 class PlayerUpdateSystem(System):
-    COMPS = [VelocityComp, InputConfigComp]
-    MOVE_SPEED = 5.0
+    COMPS = [VelocityComp, MoveSpeedComp, InputConfigComp]
 
     def _run(self, entities):
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            vel, inp_conf = entity.get_comps(VelocityComp, InputConfigComp)
+            vel, speed, inp_conf = entity.get_comps(VelocityComp, MoveSpeedComp, InputConfigComp)
+            speed = speed.speed
             if inp_handler.is_key_down(inp_conf.key_map[InputIntent.UP]):
-                vel.y -= PlayerUpdateSystem.MOVE_SPEED
+                vel.y -= speed
             if inp_handler.is_key_down(inp_conf.key_map[InputIntent.DOWN]):
-                vel.y += PlayerUpdateSystem.MOVE_SPEED
+                vel.y += speed
             if inp_handler.is_key_down(inp_conf.key_map[InputIntent.LEFT]):
-                vel.x -= PlayerUpdateSystem.MOVE_SPEED
+                vel.x -= speed
             if inp_handler.is_key_down(inp_conf.key_map[InputIntent.RIGHT]):
-                vel.x += PlayerUpdateSystem.MOVE_SPEED
+                vel.x += speed
 
 
 class AmmoUpdateSystem(System):
@@ -61,31 +61,32 @@ class AmmoUpdateSystem(System):
             if len(ammo.rounds) == 0:
                 # They're empty.  Remove their ammo belt.
                 entity.remove_comp(AmmoComp)
-            elif inp_handler.is_key_down(inp_conf.key_map[InputIntent.FIRE]):
+            elif inp_handler.is_key_pressed(inp_conf.key_map[InputIntent.FIRE]):
                 projectile_cons = ammo.rounds.popleft()
                 projectile = self.game.create_entity()
                 projectile_cons.init(projectile, entity, pos.x, pos.y, vel.x, vel.y)
 
 
-class PositionBoundSystem(System):
-    COMPS = [PositionComp, VelocityComp, SizeComp, PositionBoundComp]
+class PositionBoundBounceSystem(System):
+    COMPS = [PositionComp, VelocityComp, SizeComp, PositionBoundComp, PositionBoundBounceMultiplierComp]
 
     def _run(self, entities):
         for entity in entities:
-            pos, vel, size, bound = entity.get_comps(PositionComp, VelocityComp, SizeComp, PositionBoundComp)
+            pos, vel, size, bound, mult = entity.get_comps(PositionComp, VelocityComp, SizeComp, PositionBoundComp, PositionBoundBounceMultiplierComp)
+            mult = mult.multiplier
             intended_pos = PositionComp(pos.x + vel.x, pos.y + vel.y)
             if intended_pos.x < bound.x:
                 pos.x = bound.x
-                vel.x *= -10
+                vel.x *= -mult
             elif intended_pos.x + size.w > bound.x + bound.w:
                 pos.x = bound.x + bound.w - size.w
-                vel.x *= -10
+                vel.x *= -mult
             if intended_pos.y < bound.y:
                 pos.y = bound.y
-                vel.y *= -10
+                vel.y *= -mult
             elif intended_pos.y + size.h > bound.y + bound.h:
                 pos.y = bound.y + bound.h - size.h
-                vel.y *= -10
+                vel.y *= -mult
 
 
 class CollideSystem(System):

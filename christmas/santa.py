@@ -51,22 +51,3 @@ class Santa:
         entity.add_comp(MugComp(Santa.MUG_SPRITES))
         entity.add_comp(QuoteComp(Santa.QUOTES))
         entity.add_comp(MoveSelectComp(Santa.MOVES))
-
-
-class CoalProjectile:
-    SPRITES = load_images([
-        'res/img/coal.png',
-    ], scale_factor=4)
-    PROJECTILE_LIFE = 40
-
-    @staticmethod
-    def init(entity, owner, x, y, xv, yv):
-        entity.add_comp(PositionComp(x, y))
-        entity.add_comp(VelocityComp(xv, yv))
-        entity.add_comp(CollideFlag())
-        entity.add_comp(ProjectileFlag())
-        entity.add_comp(OwnerComp(owner))
-        entity.add_comp(LifetimeComp(CoalProjectile.PROJECTILE_LIFE))
-        entity.add_comp(DrawComp(CoalProjectile.SPRITES))
-        entity.add_comp(SizeComp(CoalProjectile.SPRITES[0].get_width(),
-                                 CoalProjectile.SPRITES[0].get_height()))

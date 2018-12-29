@@ -10,7 +10,6 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .santa import CoalProjectile
 
 
 class Benjamin:

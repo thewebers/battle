@@ -15,6 +15,10 @@ class VelocityComp:
         self.x = x
         self.y = y
 
+class MoveSpeedComp:
+    def __init__(self, speed):
+        self.speed = speed
+
 SizeComp = namedtuple('SizeComp', ['w', 'h'])
 
 class LifetimeComp:
@@ -47,6 +51,8 @@ QuoteComp = namedtuple('QuoteComp', ['quotes'])
 MoveSelectComp = namedtuple('MoveSelectComp', ['moves'])
 
 class PositionBoundComp(pg.Rect): pass
+
+PositionBoundBounceMultiplierComp = namedtuple('PositionBoundBounceMultiplierComp', ['multiplier'])
 
 class DrawComp(pg.sprite.Sprite):
     def __init__(self, images):

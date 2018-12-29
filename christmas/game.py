@@ -12,6 +12,7 @@ from .director import Director
 from .entity import Entity
 from .input_handler import InputHandler
 from .player import Player
+from .projectile import Projectile
 from .santa import Santa
 from .sound import Sound, SoundType
 from .system import *
@@ -31,7 +32,7 @@ class Game:
             SnowParticleUpdateSystem(self),
             PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
-            PositionBoundSystem(self),
+            PositionBoundBounceSystem(self),
             CollideSystem(self),
             PositionUpdateSystem(self),
             VelocityAttenuateSystem(self),
@@ -75,6 +76,9 @@ class Game:
         # we have our own ECS architecture for organizing entities.
         self.sprite_group = pg.sprite.RenderUpdates()
         DrawComp.groups = self.sprite_group
+
+        # Static Initialization
+        Projectile.static_init(self.width, self.height)
 
         # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
