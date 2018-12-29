@@ -1,8 +1,7 @@
-import pygame as pg
-
-import random
 import numpy as np
-import matplotlib.pyplot as plt
+import random
+
+import pygame as pg
 
 from .component import *
 from .util import DrawRect
@@ -84,8 +83,6 @@ class SnowGlobe:
         if debug_mode:
             return
         grid = Perlin.generate(20, 40, 50)
-        # plt.imshow(grid, origin='upper')
-        # plt.show()
 
     @staticmethod
     def create_snowflake():

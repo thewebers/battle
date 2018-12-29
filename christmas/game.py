@@ -1,17 +1,17 @@
 import random
 
-import pygame as pg
 from pygame.locals import *
+import pygame as pg
 
 from .benjamin import Benjamin
-from .logan import Logan
 from .color import *
 from .component import *
-from .globe import SnowGlobe
 from .dialog import DialogWindow
 from .director import Director
 from .entity import Entity
+from .globe import SnowGlobe
 from .input_handler import InputHandler
+from .logan import Logan
 from .player import Player
 from .projectile import Projectile
 from .santa import Santa

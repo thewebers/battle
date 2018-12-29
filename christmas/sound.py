@@ -1,9 +1,8 @@
+from enum import Enum
 import glob
-import random
-
 import pygame as pg
 
-from enum import Enum
+import random
 
 
 class SoundType(Enum):
