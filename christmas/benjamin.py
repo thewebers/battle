@@ -22,21 +22,21 @@ class Benjamin:
         'res/img/ben_mug_2.png'
     ], scale_factor=4)
     MUG_ANIM_DELAY = 10
+    NAME = 'Benjamin'
     QUOTES = [
         'Eat balls!',
     ]
     MOVES = [
-        MoveOption('[B]alls', K_b, 'A projectile of BALLS'),
-        MoveOption('[C]had Toss', K_c, 'A big ole football'),
-        MoveOption('Balls [T]wo', K_t, 'A projectile of BALLS (part two)'),
+        MoveOption('Balls', 'A projectile of BALLS'),
+        MoveOption('Chad Toss', 'A big ole football'),
+        MoveOption('Balls Two', 'A projectile of BALLS (part two)'),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES)
+        Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES,
+                    Benjamin.NAME, Benjamin.QUOTES, Benjamin.MOVES,
+                    Benjamin.MUG_SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(BenjaminFlag())
-        entity.add_comp(MugComp(Benjamin.MUG_SPRITES))
-        entity.add_comp(QuoteComp(Benjamin.QUOTES))
-        entity.add_comp(MoveSelectComp(Benjamin.MOVES))

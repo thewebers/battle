@@ -13,11 +13,11 @@ class Player:
     MOVE_SPEED = 7.0
 
     @staticmethod
-    def init(entity, x, y, pos_bounds, sprites):
+    def init(entity, x, y, pos_bounds, sprites, name, quotes, moves, mug_sprites):
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(0.0, 0.0))
         entity.add_comp(MoveSpeedComp(Player.MOVE_SPEED))
-        entity.add_comp(PlayerComp())
+        entity.add_comp(PlayerComp(name, quotes, moves, mug_sprites))
         entity.add_comp(PositionBoundComp(pos_bounds))
         entity.add_comp(PositionBoundBounceMultiplierComp(Player.BOUNCE_MULTIPLIER))
         entity.add_comp(DrawComp(sprites))
@@ -28,4 +28,4 @@ class Player:
         entity.add_comp(CollideFlag())
 
 
-MoveOption = namedtuple('MoveOption', ['prompt', 'key', 'description'])
+MoveOption = namedtuple('MoveOption', ['prompt', 'description'])

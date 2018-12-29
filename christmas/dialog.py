@@ -78,26 +78,27 @@ class BasicTextFrame(DialogFrame):
 
 
 class MugTextFrame(DialogFrame):
-    MUG_X_PAD = 10
+    MUG_LEFT_X_PAD = 8
+    MUG_RIGHT_X_PAD = 3
 
     def __init__(self, game, player, text):
         self.game = game
         self.mug = self.game.create_entity()
-        self.mug.add_comp(DrawComp(player.get_comp(MugComp).sprites))
+        self.mug.add_comp(DrawComp(player.get_comp(PlayerComp).mug_sprites))
         self.mug.add_comp(PositionComp(0, 0))
         self.text = text
 
     def update(self, region):
         pos = self.mug.get_comp(PositionComp)
         draw = self.mug.get_comp(DrawComp)
-        pos.x = MugTextFrame.MUG_X_PAD
+        pos.x = MugTextFrame.MUG_LEFT_X_PAD
         pos.y = region.centery - draw.rect.h / 2
 
     def draw(self, font, region, screen):
         dialog = font.render(self.text.upper(), 1, FG_COLOR)
         mugshot_x_offs = self.mug.get_comp(PositionComp).x
-        mugshot_x_offs += self.mug.get_comp(DrawComp).rect.w + MugTextFrame.MUG_X_PAD
-        mugshot_x_offs += MugTextFrame.MUG_X_PAD
+        mugshot_x_offs += MugTextFrame.MUG_LEFT_X_PAD + self.mug.get_comp(DrawComp).rect.w
+        mugshot_x_offs += MugTextFrame.MUG_RIGHT_X_PAD
         dialog_rect = dialog.get_rect(midleft=(mugshot_x_offs, region.centery))
         screen.blit(dialog, dialog_rect)
 
