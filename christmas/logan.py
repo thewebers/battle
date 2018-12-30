@@ -22,15 +22,18 @@ class Logan:
         'res/img/logan_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
+    NAME = 'Logan'
     QUOTES = [
         'Eat carpel toobley!',
         'I\'m very ready to zonk right about now. Zzzzz.',
         'Now, what\'s going on there?',
+        'See my erection? Just. Don\'t. Think. About. It.',
+        'Yeah, sure. I\'ll just write a mediocre program on my $5,000 laptop. COME ON!.',
     ]
     MOVES = [
-        MoveOption('BREAKDANCE TORNADO', 'Little tornado thrown on over to Santa.'),
+        MoveOption('BREAKDANCE TORNADO', 'Little tornado of sick dance moves for Santa.'),
         MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.'),
-        MoveOption('FULL SEND', '...'),
+        MoveOption('FULL SEND', 'A 50 lbs dumbbell.'),
     ]
 
     @staticmethod

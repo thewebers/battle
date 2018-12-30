@@ -22,10 +22,14 @@ class Robert:
         'res/img/rob_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
+    NAME = 'Robert'
     QUOTES = [
-        'Are you frickin\' kiddin\' me?.',
+        'Are you FRICKIN\' kiddin\' me?.',
         'Jimminy Christmas!',
         'HUH?',
+        'WHAT\'S THAT?',
+        'Life is simple economics. Human desires are insatiable.',
+        'Hindsight is 20/20.'
     ]
     MOVES = [
         MoveOption('DAD STRENGTH', 'A 50 lbs dumbbell for your face to consume.'),
@@ -35,9 +39,9 @@ class Robert:
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Logan.SPRITES,
-                    Logan.NAME, Logan.QUOTES, Logan.MOVES,
-                    Logan.MUG_SPRITES)
+        Player.init(entity, x, y, pos_bounds, Robert.SPRITES,
+                    Robert.NAME, Robert.QUOTES, Robert.MOVES,
+                    Robert.MUG_SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
-        entity.add_comp(LoganFlag())
+        entity.add_comp(RobertFlag())

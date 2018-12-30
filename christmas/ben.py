@@ -25,11 +25,14 @@ class Benjamin:
     NAME = 'Benjamin'
     QUOTES = [
         'Eat balls!',
+        'I don\'t have to workout for my muscles. Look at me!',
+        'Butthead-fweak!!',
+        'I can get away with whatever I want because mom and dad were also the youngest child. WEEEEEEEE!',
     ]
     MOVES = [
         MoveOption('BALL CHIN', 'A projectile of his ball chin.'),
-        MoveOption('CHAD TOSSER', 'A big ole football'),
-        MoveOption('JOINT', 'Devil\'s Lettuce is especially devilish.'),
+        MoveOption('CHAD TOSSER', 'A big ole football because this guy IS GOOD AT SPORTS.'),
+        MoveOption('THE JOINT', 'Devil\'s Lettuce is especially devilish today.'),
     ]
 
     @staticmethod

@@ -86,6 +86,16 @@ class BenjaminFlag: pass
 
 class LoganFlag: pass
 
+class LucasFlag: pass
+
+class RobertFlag: pass
+
+class DeAnneFlag: pass
+
+class JoshuaFlag: pass
+
+class JanicolousFlag: pass
+
 class SantaFlag: pass
 
 class TopPlayerFlag: pass

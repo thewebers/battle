@@ -14,28 +14,32 @@ from .player import Player, MoveOption
 
 class Joshua:
     SPRITES = load_images([
-        'res/img/luke_1.png',
-        'res/img/luke_2.png'
+        'res/img/josh_1.png',
+        'res/img/josh_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/luke_mug_1.png',
-        'res/img/luke_mug_2.png'
+        'res/img/josh_mug_1.png',
+        'res/img/josh_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
+    NAME = 'Joshua'
     QUOTES = [
-        '...and that\'s the way it was.',
+        'You guys aren\'t well read.'
+        'Fact: EM waves are killing your cummies.',
+        'This family is diagnosably insane.',
+        'I\'m tall.',
     ]
     MOVES = [
-        MoveOption('LUBE TUBE', 'A bottle of canola oil saved for this very occasion.'),
-        MoveOption('PROTEIN SHAKE', 'A concoction for massive gains.'),
-        MoveOption('ROBOT', 'Little slave robot come after you hard.'),
+        MoveOption('5G', 'Radio waves never hurt so good.'),
+        MoveOption('LITERATURE', 'A package of knowledge. But this time, it be deadly.'),
+        MoveOption('SEMEN', 'This guy fucks.'),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Logan.SPRITES,
-                    Logan.NAME, Logan.QUOTES, Logan.MOVES,
-                    Logan.MUG_SPRITES)
+        Player.init(entity, x, y, pos_bounds, Joshua.SPRITES,
+                    Joshua.NAME, Joshua.QUOTES, Joshua.MOVES,
+                    Joshua.MUG_SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
-        entity.add_comp(LoganFlag())
+        entity.add_comp(JoshuaFlag())

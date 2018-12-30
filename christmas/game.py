@@ -13,6 +13,7 @@ from .entity import Entity
 from .globe import SnowGlobe
 from .input_handler import InputHandler
 from .janic import Janicolous
+from .josh import Joshua
 from .logan import Logan
 from .luke import Lucas
 from .player import Player
@@ -52,7 +53,12 @@ class Game:
         ]
         self.webers = [
             Benjamin,
-            Logan
+            DeAnne,
+            Janicolous,
+            Joshua,
+            Logan,
+            Lucas,
+            Robert
         ]
         self.entities = []
         self.input_handler = InputHandler()
