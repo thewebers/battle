@@ -12,32 +12,31 @@ from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 
 
-class Logan:
+class Benjamin:
     SPRITES = load_images([
-        'res/img/logan_1.png',
-        'res/img/logan_2.png'
+        'res/img/ben_1.png',
+        'res/img/ben_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/logan_mug_1.png',
-        'res/img/logan_mug_2.png'
+        'res/img/ben_mug_1.png',
+        'res/img/ben_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
+    NAME = 'Benjamin'
     QUOTES = [
-        'Eat carpel toobley!',
-        'I\'m very ready to zonk right about now. Zzzzz.',
-        'Now, what\'s going on there?',
+        'Eat balls!',
     ]
     MOVES = [
-        MoveOption('BREAKDANCE TORNADO', 'Little tornado thrown on over to Santa.'),
-        MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.'),
-        MoveOption('FULL SEND', '...'),
+        MoveOption('BALL CHIN', 'A projectile of his ball chin.'),
+        MoveOption('CHAD TOSSER', 'A big ole football'),
+        MoveOption('JOINT', 'Devil\'s Lettuce is especially devilish.'),
     ]
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
-        Player.init(entity, x, y, pos_bounds, Logan.SPRITES,
-                    Logan.NAME, Logan.QUOTES, Logan.MOVES,
-                    Logan.MUG_SPRITES)
+        Player.init(entity, x, y, pos_bounds, Benjamin.SPRITES,
+                    Benjamin.NAME, Benjamin.QUOTES, Benjamin.MOVES,
+                    Benjamin.MUG_SPRITES)
         entity.add_comp(TopPlayerFlag())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
-        entity.add_comp(LoganFlag())
+        entity.add_comp(BenjaminFlag())

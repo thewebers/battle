@@ -9,18 +9,19 @@ from .util import DrawRect
 
 class Perlin:
     '''Generate a 2-D Perlin distribution.
-    
+
     More information: https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/perlin-noise-part-2
     '''
     SEED_MAX = 15
 
     def generate(w, h, n, thresh=0.5):
+        # TODO: Argument documentation.
         # TODO: Use arguments.
         lin1 = np.linspace(0, w, n, endpoint=False)
         lin2 = np.linspace(0, h, n, endpoint=False)
-        x, y = np.meshgrid(lin1, lin2) 
+        x, y = np.meshgrid(lin1, lin2)
         # lin = np.linspace(0, 5, 100, endpoint=False)
-        # x, y = np.meshgrid(lin, lin) 
+        # x, y = np.meshgrid(lin, lin)
         grid = Perlin._perlin(x, y, seed=random.randint(0, Perlin.SEED_MAX))
         return grid
 
@@ -47,8 +48,8 @@ class Perlin:
         n10 = Perlin._gradient(p[p[xi + 1] + yi], xf - 1, yf)
         # Combine noises.
         x1 = Perlin._lerp(n00, n10, u)
-        x2 = Perlin._lerp(n01, n11, u) 
-        return Perlin._lerp(x1,x2,v) 
+        x2 = Perlin._lerp(n01, n11, u)
+        return Perlin._lerp(x1,x2,v)
 
     @staticmethod
     def _lerp(a, b, x):
@@ -69,7 +70,7 @@ class Perlin:
 
 
 class SnowGlobe:
-    COLORS = [(255,) * 3, (220,) * 3] 
+    COLORS = [(255,) * 3, (220,) * 3]
     DIMEN  = (4,) * 2
     OOB_PADDING = 50 # px
 
@@ -96,7 +97,7 @@ class SnowGlobe:
 
         if t % 1000 != 0:
             return
-        
+
         x, y = (random.randint(0, self.w + 1), 0)
         target_x, target_y = (x, random.randint(0, self.h + 1))
         sprites = [self.create_snowflake()]

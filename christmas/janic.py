@@ -12,25 +12,23 @@ from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 
 
-class Logan:
+class Janicolous:
     SPRITES = load_images([
-        'res/img/logan_1.png',
-        'res/img/logan_2.png'
+        'res/img/luke_1.png',
+        'res/img/luke_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/logan_mug_1.png',
-        'res/img/logan_mug_2.png'
+        'res/img/luke_mug_1.png',
+        'res/img/luke_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
     QUOTES = [
-        'Eat carpel toobley!',
-        'I\'m very ready to zonk right about now. Zzzzz.',
-        'Now, what\'s going on there?',
+        '...and that\'s the way it was.',
     ]
     MOVES = [
-        MoveOption('BREAKDANCE TORNADO', 'Little tornado thrown on over to Santa.'),
-        MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.'),
-        MoveOption('FULL SEND', '...'),
+        MoveOption('LUBE TUBE', 'A bottle of canola oil saved for this very occasion.'),
+        MoveOption('PROTEIN SHAKE', 'A concoction for massive gains.'),
+        MoveOption('ROBOT', 'Little slave robot come after you hard.'),
     ]
 
     @staticmethod

@@ -3,17 +3,21 @@ import random
 from pygame.locals import *
 import pygame as pg
 
-from .benjamin import Benjamin
+from .ben import Benjamin
 from .color import *
 from .component import *
+from .dee import DeAnne
 from .dialog import DialogWindow
 from .director import Director
 from .entity import Entity
 from .globe import SnowGlobe
 from .input_handler import InputHandler
+from .janic import Janicolous
 from .logan import Logan
+from .luke import Lucas
 from .player import Player
 from .projectile import Projectile
+from .rob import Robert
 from .santa import Santa
 from .sound import Sound, SoundType
 from .system import *

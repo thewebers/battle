@@ -12,25 +12,25 @@ from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
 
 
-class Logan:
+class Robert:
     SPRITES = load_images([
-        'res/img/logan_1.png',
-        'res/img/logan_2.png'
+        'res/img/rob_1.png',
+        'res/img/rob_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/logan_mug_1.png',
-        'res/img/logan_mug_2.png'
+        'res/img/rob_mug_1.png',
+        'res/img/rob_mug_2.png'
     ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
     QUOTES = [
-        'Eat carpel toobley!',
-        'I\'m very ready to zonk right about now. Zzzzz.',
-        'Now, what\'s going on there?',
+        'Are you frickin\' kiddin\' me?.',
+        'Jimminy Christmas!',
+        'HUH?',
     ]
     MOVES = [
-        MoveOption('BREAKDANCE TORNADO', 'Little tornado thrown on over to Santa.'),
-        MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.'),
-        MoveOption('FULL SEND', '...'),
+        MoveOption('DAD STRENGTH', 'A 50 lbs dumbbell for your face to consume.'),
+        MoveOption('FINANCIAL REPORT', 'A financial report tailored just for you.'),
+        MoveOption('HAY BALE', 'The devil went down to Georgia.'),
     ]
 
     @staticmethod
