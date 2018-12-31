@@ -54,6 +54,8 @@ class PositionBoundComp(pg.Rect): pass
 
 PositionBoundBounceMultiplierComp = namedtuple('PositionBoundBounceMultiplierComp', ['multiplier'])
 
+class OutOfBoundsComp(pg.Rect): pass
+
 class DrawComp(pg.sprite.Sprite):
     def __init__(self, images):
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -82,6 +84,18 @@ class ProjectileFlag: pass
 
 class BenjaminFlag: pass
 
+class LoganFlag: pass
+
+class LucasFlag: pass
+
+class RobertFlag: pass
+
+class DeAnneFlag: pass
+
+class JoshuaFlag: pass
+
+class JanicolousFlag: pass
+
 class SantaFlag: pass
 
 class TopPlayerFlag: pass
@@ -93,3 +107,4 @@ class VelocityAttenuateFlag: pass
 class OutOfBoundsKillFlag: pass
 
 class DeadFlag: pass
+

@@ -24,22 +24,25 @@ def _init_chad_toss_move(player):
 
 class Benjamin:
     SPRITES = load_images([
-        'res/img/luke_1.png',
-        'res/img/luke_2.png'
-    ], scale_factor=4)
+        'res/img/ben_1.png',
+        'res/img/ben_2.png'
+    ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_SPRITES = load_images([
-        'res/img/luke_mug_1.png',
-        'res/img/luke_mug_2.png'
-    ], scale_factor=4)
+        'res/img/ben_mug_1.png',
+        'res/img/ben_mug_2.png'
+    ], scale_factor=Player.SPRITE_SCALE_FACTOR)
     MUG_ANIM_DELAY = 10
     NAME = 'Benjamin'
     QUOTES = [
         'Eat balls!',
+        'I don\'t have to workout for my muscles. Look at me!',
+        'Butthead-fweak!!',
+        'I can get away with whatever I want because mom and dad were also the youngest child. WEEEEEEEE!',
     ]
     MOVES = [
-        MoveOption('Balls', 'A projectile of BALLS', _init_balls_move),
-        MoveOption('Chad Toss', 'A big ole football', _init_chad_toss_move),
-        MoveOption('Balls Two', 'A projectile of BALLS (part two)', _init_balls_move),
+        MoveOption('BALL CHIN', 'A projectile of his ball chin.', _init_balls_move),
+        MoveOption('CHAD TOSSER', 'A big ole football because this guy IS GOOD AT SPORTS.', _init_chad_toss_move),
+        MoveOption('THE JOINT', 'Devil\'s Lettuce is especially devilish today.', _init_balls_move),
     ]
 
     @staticmethod

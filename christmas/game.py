@@ -1,18 +1,24 @@
 import random
 
-import pygame as pg
 from pygame.locals import *
+import pygame as pg
 
-from .benjamin import Benjamin
+from .ben import Benjamin
 from .color import *
 from .component import *
+from .dee import DeAnne
 from .dialog import DialogWindow
 from .director import Director
 from .entity import Entity
 from .globe import SnowGlobe
 from .input_handler import InputHandler
+from .janic import Janicolous
+from .josh import Joshua
+from .logan import Logan
+from .luke import Lucas
 from .player import Player
 from .projectile import Projectile
+from .rob import Robert
 from .santa import Santa
 from .sound import Sound, SoundType
 from .system import *
@@ -25,7 +31,8 @@ class Game:
     """Handles all game logic and interfaces with UI via pygame."""
     title = 'Another Ordinary Weber Christmas'
 
-    def __init__(self, width, height):
+    def __init__(self, width, height, debug_mode=False):
+        self._debug_mode = debug_mode
         self.width = width
         self.height = height
         self.systems = [
@@ -39,9 +46,19 @@ class Game:
             LifetimeUpdateSystem(self),
             OutOfBoundsCleanupSystem(self),
             DeadCleanupSystem(self),
+            OutOfBoundsCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self)
+        ]
+        self.webers = [
+            Benjamin,
+            DeAnne,
+            Janicolous,
+            Joshua,
+            Logan,
+            Lucas,
+            Robert
         ]
         self.entities = []
         self.input_handler = InputHandler()
@@ -55,7 +72,7 @@ class Game:
         pg.init()
 
         # Game Music and Sound
-        self.sound = Sound()
+        self.sound = Sound(debug_mode=self._debug_mode)
 
         # Window
         self.screen = pg.display.set_mode((self.width, self.height))
@@ -84,7 +101,7 @@ class Game:
         # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
         self.top_player = self.create_entity()
-        Benjamin.init(self.top_player, weber_x, weber_y, self.top_region)
+        random.choice(self.webers).init(self.top_player, weber_x, weber_y, self.top_region)
         weber_pos = self.top_player.get_comp(PositionComp)
         weber_pos.x -= self.top_player.get_comp(SizeComp).w / 2
         weber_pos.y -= self.top_player.get_comp(SizeComp).h / 2
@@ -101,7 +118,7 @@ class Game:
         self.director = Director(self)
 
         # Initialize snowglobe.
-        self.globe = SnowGlobe(self.width, self.height, self.create_entity)
+        self.globe = SnowGlobe(self.width, self.height, self.create_entity, debug_mode=self._debug_mode)
 
     def run(self):
         while True:

@@ -11,6 +11,7 @@ class Player:
     DEFAULT_ANIM_DELAY = 5
     BOUNCE_MULTIPLIER = 8.0
     MOVE_SPEED = 7.0
+    SPRITE_SCALE_FACTOR = 4
 
     @staticmethod
     def init(entity, x, y, pos_bounds, sprites, name, quotes, moves, mug_sprites):

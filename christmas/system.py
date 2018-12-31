@@ -27,10 +27,30 @@ class SnowParticleUpdateSystem(System):
         # TODO: Perhaps if a player walks over the snow, it disappears or becomes compacted ice.
         for entity in entities:
             pos, vel, target = entity.get_comps(PositionComp, VelocityComp, SnowTargetComp)
-            if pos.y == target.y:
-                continue
-            pos.x += vel.x
-            pos.y += vel.y
+            if pos.y == target.y: 
+                vel.x = 0
+                vel.y = 0
+            pos.x += vel.x 
+            pos.y += vel.y 
+
+
+class TopPlayerUpdateSystem(System):
+    COMPS = [VelocityComp, TopPlayerFlag]
+    MOVE_SPEED = 5.0
+
+    def _run(self, entities):
+        assert(len(entities) == 1)
+        inp_handler = self.game.get_input_handler()
+        for entity in entities:
+            vel = entity.get_comp(VelocityComp)
+            if inp_handler.is_key_pressed(K_w):
+                vel.y -= TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_s):
+                vel.y += TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_a):
+                vel.x -= TopPlayerUpdateSystem.MOVE_SPEED
+            if inp_handler.is_key_pressed(K_d):
+                vel.x += TopPlayerUpdateSystem.MOVE_SPEED
 
 
 class PlayerUpdateSystem(System):
@@ -172,6 +192,30 @@ class DeadCleanupSystem(System):
     def _run(self, entities):
         for entity in entities:
             self.game.destroy_entity(entity)
+
+
+class OutOfBoundsCleanupSystem(System):
+    COMPS = [PositionComp, SizeComp, VelocityComp, OutOfBoundsComp]
+    TRESPASS_THRESHOLD = 500 # px
+
+    def _run(self, entities):
+        for entity in entities:
+            pos, vel, size, bound = entity.get_comps(PositionComp, VelocityComp, SizeComp, OutOfBoundsComp)
+            intended_pos = PositionComp(pos.x + vel.x, pos.y + vel.y)
+
+            delete = False
+            if intended_pos.x < bound.x:
+                delete = True
+            elif intended_pos.x + size.w > bound.x + bound.w:
+                delete = True
+            if intended_pos.y < bound.y:
+                delete = True
+            elif intended_pos.y + size.h > bound.y + bound.h:
+                delete = True
+            
+            if delete:
+                print('Delete time :)')
+                self.game.destroy_entity(entity)
 
 
 class PlayerAnimateUpdateSystem(System):

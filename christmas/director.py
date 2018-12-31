@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 
-from .benjamin import Benjamin
+from .ben import Benjamin
 from .component import *
 from .dialog import EmptyFrame, BasicTextFrame, MugTextFrame
 from .input_handler import InputIntent, CHOICE_INTENTS
@@ -167,4 +167,3 @@ class EndTurnState(State):
             return self.game.get_top_player()
         else:
             assert False
-

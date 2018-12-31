@@ -1,9 +1,8 @@
+from enum import Enum
 import glob
-import random
-
 import pygame as pg
 
-from enum import Enum
+import random
 
 
 class SoundType(Enum):
@@ -20,7 +19,10 @@ class SoundType(Enum):
 
 
 class Sound:
-    def __init__(self):
+    def __init__(self, debug_mode=False):
+        self._debug_mode = debug_mode
+        if self._debug_mode:
+            return
         # Initialize mixer.
         pg.mixer.init()
         # Load `Sound` objects into memory.
@@ -39,6 +41,8 @@ class Sound:
         self.play(SoundType.MUSIC_FIGHT)
 
     def play(self, sound_type):
+        if self._debug_mode:
+            return
         assert(isinstance(sound_type, SoundType))
         # NOTE: There's a pg.mixer.music.queue method for song queues.
         random.choice(self._sounds[sound_type]).play()
