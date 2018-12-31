@@ -14,7 +14,7 @@ class DialogWindow:
     def __init__(self, screen_width, screen_height, font):
         window_top = (screen_height - DialogWindow.HEIGHT) / 2
         window_bottom = window_top + DialogWindow.HEIGHT
-        self.screen_region = DrawRect(0, window_top, screen_width, DialogWindow.HEIGHT)
+        self.screen_region = DrawRect(0, window_top, screen_width, DialogWindow.HEIGHT, BG_COLOR)
         self.font = font
         self.frame = EmptyFrame()
 
@@ -22,7 +22,7 @@ class DialogWindow:
         self.frame.update(self.screen_region)
 
     def draw(self, screen):
-        self.screen_region.draw(screen, BG_COLOR)
+        self.screen_region.draw(screen)
         self.frame.draw(self.font, self.screen_region, screen)
 
     def set_frame(self, frame):

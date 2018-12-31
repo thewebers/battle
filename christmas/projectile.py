@@ -1,7 +1,9 @@
 import pygame as pg
 
+from .color import *
 from .component import *
 from .image import load_images
+from .util import make_color_surface
 
 
 class Projectile:
@@ -33,3 +35,43 @@ class CoalProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv, CoalProjectile.SPRITES, CoalProjectile.LIFETIME)
+
+
+class BeerProjectile:
+    SPRITES = [make_color_surface((80, 80), YELLOW)]
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        BeerProjectile.SPRITES, BeerProjectile.LIFETIME)
+
+
+class ElfProjectile:
+    SPRITES = [make_color_surface((100, 100), GREEN)]
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        ElfProjectile.SPRITES, ElfProjectile.LIFETIME)
+
+
+class BallsProjectile:
+    SPRITES = [make_color_surface((100, 100), ORANGE)]
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        BallsProjectile.SPRITES, BallsProjectile.LIFETIME)
+
+
+class FootballProjectile:
+    SPRITES = [make_color_surface((80, 140), RED)]
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        FootballProjectile.SPRITES, FootballProjectile.LIFETIME)

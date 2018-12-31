@@ -129,8 +129,7 @@ class BeginMoveState(State):
         self.move = move
         self.remaining_time = BeginMoveState.STATE_DURATION
         self.game.dialog_window.set_frame(MugTextFrame(self.game, self.player, self.move.description))
-        for _ in range(3):
-            self.player.force_get_comp(AmmoComp).rounds.append(CoalProjectile)
+        self.move.move_init(player)
 
     def update(self):
         self.remaining_time -= 1

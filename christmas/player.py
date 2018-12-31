@@ -28,4 +28,4 @@ class Player:
         entity.add_comp(CollideFlag())
 
 
-MoveOption = namedtuple('MoveOption', ['prompt', 'description'])
+MoveOption = namedtuple('MoveOption', ['prompt', 'description', 'move_init'])

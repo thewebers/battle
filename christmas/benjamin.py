@@ -10,16 +10,26 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile
+
+
+def _init_balls_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+
+def _init_chad_toss_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
 
 
 class Benjamin:
     SPRITES = load_images([
-        'res/img/ben_1.png',
-        'res/img/ben_2.png'
+        'res/img/luke_1.png',
+        'res/img/luke_2.png'
     ], scale_factor=4)
     MUG_SPRITES = load_images([
-        'res/img/ben_mug_1.png',
-        'res/img/ben_mug_2.png'
+        'res/img/luke_mug_1.png',
+        'res/img/luke_mug_2.png'
     ], scale_factor=4)
     MUG_ANIM_DELAY = 10
     NAME = 'Benjamin'
@@ -27,9 +37,9 @@ class Benjamin:
         'Eat balls!',
     ]
     MOVES = [
-        MoveOption('Balls', 'A projectile of BALLS'),
-        MoveOption('Chad Toss', 'A big ole football'),
-        MoveOption('Balls Two', 'A projectile of BALLS (part two)'),
+        MoveOption('Balls', 'A projectile of BALLS', _init_balls_move),
+        MoveOption('Chad Toss', 'A big ole football', _init_chad_toss_move),
+        MoveOption('Balls Two', 'A projectile of BALLS (part two)', _init_balls_move),
     ]
 
     @staticmethod

@@ -6,10 +6,10 @@ from pygame.locals import *
 from .benjamin import Benjamin
 from .color import *
 from .component import *
-from .globe import SnowGlobe
 from .dialog import DialogWindow
 from .director import Director
 from .entity import Entity
+from .globe import SnowGlobe
 from .input_handler import InputHandler
 from .player import Player
 from .projectile import Projectile
@@ -68,9 +68,10 @@ class Game:
         # NB: The dialog window is between the top region and the bottom region.
         self.dialog_window = DialogWindow(self.width, self.height, self.font)
         dialog_rect = self.dialog_window.get_rect()
-        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top)
+        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, GRAY)
         self.bottom_region = DrawRect(0, dialog_rect.bottom,
-                                      self.width, self.height - dialog_rect.bottom)
+                                      self.width, self.height - dialog_rect.bottom,
+                                      GRAY)
 
         # We only use a single PyGame group for all of our rendering, because
         # we have our own ECS architecture for organizing entities.
@@ -116,9 +117,9 @@ class Game:
                 system.run()
 
             # Draw game environment.
-            self.top_region.draw(self.screen, GRAY)
+            self.top_region.draw(self.screen)
             self.dialog_window.draw(self.screen)
-            self.bottom_region.draw(self.screen, GRAY)
+            self.bottom_region.draw(self.screen)
             self.draw_stats(self.top_player)
             self.draw_stats(self.bottom_player)
             self.globe.shake()

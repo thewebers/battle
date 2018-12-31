@@ -3,7 +3,7 @@ import pygame as pg
 import random
 
 from .component import *
-from .util import DrawRect
+from .util import make_color_surface
 
 
 class SnowGlobe:
@@ -17,9 +17,7 @@ class SnowGlobe:
 
     @staticmethod
     def create_snowflake():
-        flake = pg.Surface(SnowGlobe.DIMEN)
-        flake.fill(random.choice(SnowGlobe.COLORS))
-        return flake
+        return make_color_surface(SnowGlobe.DIMEN, random.choice(SnowGlobe.COLORS))
 
     def shake(self):
         """Spawn snow entities."""
@@ -30,7 +28,7 @@ class SnowGlobe:
         x, y = (random.randint(0, self.w + 1), 0)
         target_x, target_y = (x, random.randint(0, self.h + 1))
         sprites = [self.create_snowflake()]
-        pos_bounds = DrawRect(0, 0, self.w, self.h)
+        pos_bounds = pg.Rect(0, 0, self.w, self.h)
 
         entity = self.create_entitiy()
         entity.add_comp(PositionComp(x, y))
