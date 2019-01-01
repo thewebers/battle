@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+
+
+def _init_bodhisattva_bomb(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+def _init_the_road_to_ruin(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_idkwdywd_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Janicolous:
@@ -29,9 +41,9 @@ class Janicolous:
         'Invest in silver. It\'s good for you.',
     ]
     MOVES = [
-        MoveOption('BODHISATTVA BOMB', 'White fluff ball with eyes, but hungry for blood.'),
-        MoveOption('THE ROAD TO RUIN', 'Silver coins for safe keeping.'),
-        MoveOption('IDKWDYWD', '"I don\'t know, what do you wanna do?" A ball of confusion.'),
+        MoveOption('BODHISATTVA BOMB', 'White fluff ball with eyes, but hungry for blood.', _init_bodhisattva_bomb),
+        MoveOption('THE ROAD TO RUIN', 'Silver coins for safe keeping.', _init_the_road_to_ruin),
+        MoveOption('IDKWDYWD', '"I don\'t know, what do you wanna do?" A ball of confusion.', _init_idkwdywd_move),
     ]
 
     @staticmethod

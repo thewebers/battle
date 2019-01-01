@@ -46,18 +46,17 @@ class Game:
             LifetimeUpdateSystem(self),
             OutOfBoundsCleanupSystem(self),
             DeadCleanupSystem(self),
-            OutOfBoundsCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self)
         ]
         self.webers = [
-            Benjamin,
-            DeAnne,
-            Janicolous,
-            Joshua,
-            Logan,
-            Lucas,
+            # Benjamin,
+            # DeAnne,
+            # Janicolous,
+            # Joshua,
+            # Logan,
+            # Lucas,
             Robert
         ]
         self.entities = []

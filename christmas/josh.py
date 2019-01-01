@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+
+
+def _init_5g_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+def _init_literature_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_semen_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Joshua:
@@ -30,9 +42,9 @@ class Joshua:
         'I\'m tall.',
     ]
     MOVES = [
-        MoveOption('5G', 'Radio waves never hurt so good.'),
-        MoveOption('LITERATURE', 'A package of knowledge. But this time, it be deadly.'),
-        MoveOption('SEMEN', 'This guy fucks.'),
+        MoveOption('5G', 'Radio waves never hurt so good.', _init_5g_move),
+        MoveOption('LITERATURE', 'A package of knowledge. But this time, it be deadly.', _init_literature_move),
+        MoveOption('SEMEN', 'This guy fucks.', _init_semen_move),
     ]
 
     @staticmethod

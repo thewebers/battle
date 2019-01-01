@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import DumbbellProjectile, FootballProjectile, JointProjectile
+
+
+def _init_dad_strength_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(DumbbellProjectile)
+
+def _init_financial_report_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_hay_bale_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Robert:
@@ -33,9 +45,9 @@ class Robert:
         'Hindsight is 20/20.'
     ]
     MOVES = [
-        MoveOption('DAD STRENGTH', 'A 50 lbs dumbbell for your face to consume.'),
-        MoveOption('FINANCIAL REPORT', 'A financial report tailored just for you.'),
-        MoveOption('HAY BALE', 'The devil went down to Georgia.'),
+        MoveOption('DAD STRENGTH', 'A 50 lbs dumbbell for your face to consume.', _init_dad_strength_move),
+        MoveOption('FINANCIAL REPORT', 'A financial report tailored just for you.', _init_financial_report_move),
+        MoveOption('HAY BALE', 'The devil went down to Georgia.', _init_hay_bale_move),
     ]
 
     @staticmethod

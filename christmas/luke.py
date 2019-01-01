@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+
+
+def _init_lube_tube_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+def _init_protein_shake_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_robot_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Lucas:
@@ -31,9 +43,9 @@ class Lucas:
         'Did you know I have a science lab right under my bed? Sorry, it only opens for me.',
     ]
     MOVES = [
-        MoveOption('LUBE TUBE', 'A bottle of canola oil saved for this very occasion.'),
-        MoveOption('PROTEIN SHAKE', 'A concoction for massive gains.'),
-        MoveOption('ROBOT', 'Little slave robot come after you hard.'),
+        MoveOption('LUBE TUBE', 'A bottle of canola oil saved for this very occasion.', _init_lube_tube_move),
+        MoveOption('PROTEIN SHAKE', 'A concoction for massive gains.', _init_protein_shake_move),
+        MoveOption('ROBOT', 'Little slave robot come after you hard.', _init_robot_move),
     ]
 
     @staticmethod

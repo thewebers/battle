@@ -10,16 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .projectile import BallsProjectile, FootballProjectile
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
 
 
-def _init_balls_move(player):
+def _init_ball_chin_move(player):
     for _ in range(3):
         player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
 
-
-def _init_chad_toss_move(player):
+def _init_chad_tosser_move(player):
     player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_the_joint_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Benjamin:
@@ -40,9 +42,9 @@ class Benjamin:
         'I can get away with whatever I want because mom and dad were also the youngest child. WEEEEEEEE!',
     ]
     MOVES = [
-        MoveOption('BALL CHIN', 'A projectile of his ball chin.', _init_balls_move),
-        MoveOption('CHAD TOSSER', 'A big ole football because this guy IS GOOD AT SPORTS.', _init_chad_toss_move),
-        MoveOption('THE JOINT', 'Devil\'s Lettuce is especially devilish today.', _init_balls_move),
+        MoveOption('BALL CHIN', 'A projectile of his ball chin.', _init_ball_chin_move),
+        MoveOption('CHAD TOSSER', 'A big ole football because this guy IS GOOD AT SPORTS.', _init_chad_tosser_move),
+        MoveOption('THE JOINT', 'Devil\'s Lettuce is especially devilish today.', _init_the_joint_move),
     ]
 
     @staticmethod

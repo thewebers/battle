@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+
+
+def _init_breakdance_tornado_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+def _init_silent_night_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_full_send_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class Logan:
@@ -31,9 +43,9 @@ class Logan:
         'Yeah, sure. I\'ll just write a mediocre program on my $5,000 laptop. COME ON!.',
     ]
     MOVES = [
-        MoveOption('BREAKDANCE TORNADO', 'Little tornado of sick dance moves for Santa.'),
-        MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.'),
-        MoveOption('FULL SEND', 'A 50 lbs dumbbell.'),
+        MoveOption('BREAKDANCE TORNADO', 'Little tornado of sick dance moves for Santa.', _init_breakdance_tornado_move),
+        MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.', _init_silent_night_move),
+        MoveOption('FULL SEND', 'A 50 lbs dumbbell.', _init_full_send_move),
     ]
 
     @staticmethod

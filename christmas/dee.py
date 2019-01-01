@@ -10,6 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+
+
+def _init_its_clobberin_time(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+
+def _init_the_gift_of_life_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+
+def _init_next_week_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
 
 
 class DeAnne:
@@ -30,9 +42,9 @@ class DeAnne:
         'Well you\'re as useless as tits on a boar.',
     ]
     MOVES = [
-        MoveOption('IT\'S CLOBBERIN\' TIME', 'Mommy finds big rock and is looking at you in an alarming way.'),
-        MoveOption('THE GIFT OF LIFE', 'Creates another testosterone-filled Weber.'),
-        MoveOption('NEXT WEEK', 'Imma knock you into next week. Only this time, I mean it.'),
+        MoveOption('IT\'S CLOBBERIN\' TIME', 'Mommy finds big rock and is looking at you in an alarming way.', _init_its_clobberin_time),
+        MoveOption('THE GIFT OF LIFE', 'Creates another testosterone-filled Weber.', _init_the_gift_of_life_move),
+        MoveOption('NEXT WEEK', 'Imma knock you into next week. Only this time, I mean it.', _init_next_week_move),
     ]
 
     @staticmethod
