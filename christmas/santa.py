@@ -31,7 +31,7 @@ class Santa:
         'How far have you gotten with a man who\'s in his mid-40s?',
         'On an unrelated note, I\'m 44.',
         'Woah. I sure can take a punch.',
-        'That all?  I wish... it was.',
+        'That all? I wish... it was.',
         'Yeah sure, spill blood all over my HAND-CRAFTED SUIT?! COME ON!',
         # TODO: The ones below are actually Luke's.
         'Can we smoke a little weed?  My words get better.',

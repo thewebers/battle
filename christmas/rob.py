@@ -27,6 +27,7 @@ class Robert:
         'Are you FRICKIN\' kiddin\' me?.',
         'Jimminy Christmas!',
         'HUH?',
+        'Seriously? No, seriously?',
         'WHAT\'S THAT?',
         'Life is simple economics. Human desires are insatiable.',
         'Hindsight is 20/20.'
