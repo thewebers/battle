@@ -9,6 +9,21 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import BOTTOM_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
+from .projectile import CoalProjectile, BeerProjectile, ElfProjectile
+
+
+def _init_coal_move(player):
+    for _ in range(3):
+        player.force_get_comp(AmmoComp).rounds.append(CoalProjectile)
+
+
+def _init_beer_move(player):
+    for _ in range(2):
+        player.force_get_comp(AmmoComp).rounds.append(BeerProjectile)
+
+
+def _init_elf_move(player):
+    player.force_get_comp(AmmoComp).rounds.append(ElfProjectile)
 
 
 class Santa:
@@ -38,9 +53,9 @@ class Santa:
         'When considering intelligence, you can be a retarded professional and still be retarded.'
     ]
     MOVES = [
-        MoveOption('Coal', 'Coal in yo a-hole'),
-        MoveOption('Beer', 'Get fukn turnt, kids'),
-        MoveOption('Rudolph', 'Eat red nose, nerd'),
+        MoveOption('Coal', 'Coal in yo a-hole', _init_coal_move),
+        MoveOption('Beer', 'Get fukn turnt, kids', _init_beer_move),
+        MoveOption('Elf', 'DAD!', _init_elf_move),
     ]
 
     @staticmethod

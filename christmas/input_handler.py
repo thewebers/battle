@@ -27,7 +27,7 @@ TOP_PLAYER_INPUT_CONFIG = {
     InputIntent.DOWN: K_s,
     InputIntent.LEFT: K_a,
     InputIntent.RIGHT: K_d,
-    InputIntent.FIRE: K_e,
+    InputIntent.FIRE: K_q,
     InputIntent.CHOOSE_MOVE_ONE: K_1,
     InputIntent.CHOOSE_MOVE_TWO: K_2,
     InputIntent.CHOOSE_MOVE_THREE: K_3,

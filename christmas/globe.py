@@ -4,7 +4,7 @@ import random
 import pygame as pg
 
 from .component import *
-from .util import DrawRect
+from .util import make_color_surface
 
 
 class Perlin:
@@ -87,9 +87,7 @@ class SnowGlobe:
 
     @staticmethod
     def create_snowflake():
-        flake = pg.Surface(SnowGlobe.DIMEN)
-        flake.fill(random.choice(SnowGlobe.COLORS))
-        return flake
+        return make_color_surface(SnowGlobe.DIMEN, random.choice(SnowGlobe.COLORS))
 
     def shake(self):
         """Spawn snow entities."""
