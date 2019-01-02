@@ -4,7 +4,7 @@ import random
 import pygame as pg
 
 from .component import *
-from .util import make_color_surface
+from .util import DrawRect, make_color_surface
 
 
 class Perlin:
@@ -100,7 +100,7 @@ class SnowGlobe:
         target_x, target_y = (x, random.randint(0, self.h + 1))
         sprites = [self.create_snowflake()]
         bounds = DrawRect(-SnowGlobe.OOB_PADDING, -SnowGlobe.OOB_PADDING, \
-                          self.w + SnowGlobe.OOB_PADDING, self.h + SnowGlobe.OOB_PADDING)
+                          self.w + SnowGlobe.OOB_PADDING, self.h + SnowGlobe.OOB_PADDING, (0, 0, 0))
 
         # Create entity with components.
         entity = self.create_entitiy()

@@ -10,7 +10,7 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .projectile import DumbbellProjectile, FinancialReportProjectile, JointProjectile
+from .projectile import DumbbellProjectile, FinancialReportProjectile, HayBaleProjectile
 
 
 def _init_dad_strength_move(player):
@@ -21,7 +21,7 @@ def _init_financial_report_move(player):
     player.force_get_comp(AmmoComp).rounds.append(FinancialReportProjectile)
 
 def _init_hay_bale_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(HayBaleProjectile)
 
 
 class Robert:

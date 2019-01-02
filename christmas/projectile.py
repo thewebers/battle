@@ -83,7 +83,7 @@ class JointProjectile:
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
-        Projectile.init(entity, owner, x, y, xv, yv, JointProjectile.SPRITES, JointProjectile.SPRITES)
+        Projectile.init(entity, owner, x, y, xv, yv, JointProjectile.SPRITES, JointProjectile.LIFETIME)
 
 
 class DumbbellProjectile:
@@ -104,3 +104,13 @@ class FinancialReportProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         FinancialReportProjectile.SPRITES, FinancialReportProjectile.LIFETIME)
+
+
+class HayBaleProjectile:
+    SPRITES = load_images(['res/img/hay.png'], scale_factor=2)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        HayBaleProjectile.SPRITES, HayBaleProjectile.LIFETIME)
