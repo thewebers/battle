@@ -58,7 +58,7 @@ class ElfProjectile:
 
 
 class BallsProjectile:
-    SPRITES = [make_color_surface((100, 100), ORANGE)]
+    SPRITES = load_images(['res/img/balls.png'], scale_factor=4)
     LIFETIME = 60
 
     @staticmethod
@@ -68,7 +68,7 @@ class BallsProjectile:
 
 
 class FootballProjectile:
-    SPRITES = [make_color_surface((80, 140), RED)]
+    SPRITES = load_images(['res/img/football.png'], scale_factor=4)
     LIFETIME = 60
 
     @staticmethod
@@ -78,7 +78,7 @@ class FootballProjectile:
 
 
 class JointProjectile:
-    SPRITES = [make_color_surface((40, 40), GREEN)]
+    SPRITES = load_images(['res/img/joint.png'], scale_factor=4)
     LIFETIME = 60
 
     @staticmethod
@@ -94,3 +94,13 @@ class DumbbellProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         DumbbellProjectile.SPRITES, DumbbellProjectile.LIFETIME)
+
+
+class FinancialReportProjectile:
+    SPRITES = load_images(['res/img/financial_report.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        FinancialReportProjectile.SPRITES, FinancialReportProjectile.LIFETIME)
