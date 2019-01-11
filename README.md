@@ -1,3 +1,6 @@
+# TODO
+It's not done yet, you cucks. Quit pretending like it is!
+
 # Characters
 
 ## Benjamin
