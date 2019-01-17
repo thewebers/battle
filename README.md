@@ -1,6 +1,8 @@
 # TODO
 It's not done yet, you cucks. Quit pretending like it is!
 
+Are my brother's even listening on this? I wonder.
+
 # Characters
 
 ## Benjamin
