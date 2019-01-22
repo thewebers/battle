@@ -5,7 +5,8 @@ import sys
 
 from christmas.game import Game
 
-WIDTH, HEIGHT = 500, 800
+
+WIDTH, HEIGHT = 700, 800
 
 
 def main():

@@ -54,9 +54,9 @@ class Game:
             # Benjamin,
             # DeAnne,
             # Janicolous,
-            # Joshua,
+            Joshua,
             # Logan,
-            Lucas,
+            # Lucas,
             # Robert
         ]
         self.entities = []
@@ -84,10 +84,10 @@ class Game:
         # NB: The dialog window is between the top region and the bottom region.
         self.dialog_window = DialogWindow(self.width, self.height, self.font)
         dialog_rect = self.dialog_window.get_rect()
-        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, GRAY)
+        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, DARK_GRAY)
         self.bottom_region = DrawRect(0, dialog_rect.bottom,
                                       self.width, self.height - dialog_rect.bottom,
-                                      GRAY)
+                                      DARK_GRAY)
 
         # We only use a single PyGame group for all of our rendering, because
         # we have our own ECS architecture for organizing entities.

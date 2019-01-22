@@ -204,3 +204,33 @@ class RobotProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         RobotProjectile.SPRITES, RobotProjectile.LIFETIME)
+
+
+class FiveGProjectile:
+    SPRITES = load_images(['res/img/5g.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        FiveGProjectile.SPRITES, FiveGProjectile.LIFETIME)
+
+
+class LiteratureProjectile:
+    SPRITES = load_images(['res/img/literature.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        LiteratureProjectile.SPRITES, LiteratureProjectile.LIFETIME)
+
+
+class SemenProjectile:
+    SPRITES = load_images(['res/img/cum.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        SemenProjectile.SPRITES, SemenProjectile.LIFETIME)

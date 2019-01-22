@@ -10,18 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+from .projectile import FiveGProjectile, LiteratureProjectile, SemenProjectile
 
 
 def _init_5g_move(player):
     for _ in range(3):
-        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+        player.force_get_comp(AmmoComp).rounds.append(FiveGProjectile)
 
 def _init_literature_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(LiteratureProjectile)
 
 def _init_semen_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(SemenProjectile)
 
 
 class Joshua:
