@@ -52,12 +52,12 @@ class Game:
         ]
         self.webers = [
             # Benjamin,
-            # DeAnne,
+            DeAnne,
             # Janicolous,
             # Joshua,
             # Logan,
             # Lucas,
-            Robert
+            # Robert
         ]
         self.entities = []
         self.input_handler = InputHandler()

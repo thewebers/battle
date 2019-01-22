@@ -114,3 +114,33 @@ class HayBaleProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         HayBaleProjectile.SPRITES, HayBaleProjectile.LIFETIME)
+
+
+class RockPileProjectile:
+    SPRITES = load_images(['res/img/rock_pile.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        RockPileProjectile.SPRITES, RockPileProjectile.LIFETIME)
+
+
+class GiftOfLifeProjectile:
+    SPRITES = load_images(['res/img/gift_of_life.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        GiftOfLifeProjectile.SPRITES, GiftOfLifeProjectile.LIFETIME)
+
+
+class MrSpoonProjectile:
+    SPRITES = load_images(['res/img/mr_spoon.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        MrSpoonProjectile.SPRITES, MrSpoonProjectile.LIFETIME)

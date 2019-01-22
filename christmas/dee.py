@@ -10,18 +10,18 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+from .projectile import RockPileProjectile, GiftOfLifeProjectile, MrSpoonProjectile
 
 
 def _init_its_clobberin_time(player):
     for _ in range(3):
-        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+        player.force_get_comp(AmmoComp).rounds.append(RockPileProjectile)
 
 def _init_the_gift_of_life_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(GiftOfLifeProjectile)
 
 def _init_next_week_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(MrSpoonProjectile)
 
 
 class DeAnne:
