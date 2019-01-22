@@ -55,8 +55,8 @@ class Game:
             # DeAnne,
             # Janicolous,
             # Joshua,
-            Logan,
-            # Lucas,
+            # Logan,
+            Lucas,
             # Robert
         ]
         self.entities = []

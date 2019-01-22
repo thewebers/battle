@@ -20,7 +20,7 @@ def _init_breakdance_tornado_move(player):
 def _init_silent_night_move(player):
     player.force_get_comp(AmmoComp).rounds.append(SilentNightProjectile)
 
-def _init_full_send_move(player):
+def _init_gray_eyebrow_move(player):
     player.force_get_comp(AmmoComp).rounds.append(GrayEyebrowProjectile)
 
 
@@ -45,7 +45,7 @@ class Logan:
     MOVES = [
         MoveOption('BREAKDANCE TORNADO', 'Little tornado of sick dance moves for Santa.', _init_breakdance_tornado_move),
         MoveOption('SILENT NIGHT', 'Throws a void of silent treatment.', _init_silent_night_move),
-        MoveOption('THE GRAY', 'That weird eyebrow that\'s kinda gray? Yep, comin\' at ya.', _init_full_send_move),
+        MoveOption('THE GRAY', 'That weird eyebrow that\'s kinda gray? Yep, comin\' at ya.', _init_gray_eyebrow_move),
     ]
 
     @staticmethod

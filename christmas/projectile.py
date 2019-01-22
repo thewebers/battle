@@ -174,3 +174,33 @@ class GrayEyebrowProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         GrayEyebrowProjectile.SPRITES, GrayEyebrowProjectile.LIFETIME)
+
+
+class LubeTubeProjectile:
+    SPRITES = load_images(['res/img/lube.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        LubeTubeProjectile.SPRITES, LubeTubeProjectile.LIFETIME)
+
+
+class ProteinShakeProjectile:
+    SPRITES = load_images(['res/img/protein_shake.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        ProteinShakeProjectile.SPRITES, ProteinShakeProjectile.LIFETIME)
+
+
+class RobotProjectile:
+    SPRITES = load_images(['res/img/robot.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        RobotProjectile.SPRITES, RobotProjectile.LIFETIME)
