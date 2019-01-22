@@ -144,3 +144,33 @@ class MrSpoonProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         MrSpoonProjectile.SPRITES, MrSpoonProjectile.LIFETIME)
+
+
+class BreakdanceTornadoProjectile:
+    SPRITES = load_images(['res/img/breakdance_tornado.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        BreakdanceTornadoProjectile.SPRITES, BreakdanceTornadoProjectile.LIFETIME)
+
+
+class SilentNightProjectile:
+    SPRITES = load_images(['res/img/silent_night.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        SilentNightProjectile.SPRITES, SilentNightProjectile.LIFETIME)
+
+
+class GrayEyebrowProjectile:
+    SPRITES = load_images(['res/img/gray_eyebrow.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        GrayEyebrowProjectile.SPRITES, GrayEyebrowProjectile.LIFETIME)

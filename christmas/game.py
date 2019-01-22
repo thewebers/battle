@@ -52,10 +52,10 @@ class Game:
         ]
         self.webers = [
             # Benjamin,
-            DeAnne,
+            # DeAnne,
             # Janicolous,
             # Joshua,
-            # Logan,
+            Logan,
             # Lucas,
             # Robert
         ]

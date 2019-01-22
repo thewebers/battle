@@ -53,7 +53,7 @@ class Perlin:
 
     @staticmethod
     def _lerp(a, b, x):
-        """Performs 'LinEar inteRPolation'."""
+        """Performs 'LinEar inteRPolation' (LERP)."""
         return a + x * (b - a)
 
     @staticmethod
