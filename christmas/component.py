@@ -67,7 +67,7 @@ class DrawComp(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 class AnimateComp:
-    def __init__(self, delay):
+    def __init__(self, delay=1.0):
         self.clock = 0
         self.delay = delay
 

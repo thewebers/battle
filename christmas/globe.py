@@ -71,7 +71,7 @@ class Perlin:
 
 class SnowGlobe:
     COLORS = [(255,) * 3, (220,) * 3]
-    DIMEN  = (4,) * 2
+    DIMEN  = (8,) * 2
     OOB_PADDING = 50 # px
 
     def __init__(self, w, h, create_entitiy, debug_mode=False):
@@ -93,7 +93,7 @@ class SnowGlobe:
         """Spawn snow entities."""
         t = pg.time.get_ticks()
 
-        if t % 1000 != 0:
+        if t % 100 != 0:
             return
 
         x, y = (random.randint(0, self.w + 1), 0)

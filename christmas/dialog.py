@@ -80,12 +80,14 @@ class BasicTextFrame(DialogFrame):
 class MugTextFrame(DialogFrame):
     MUG_LEFT_X_PAD = 8
     MUG_RIGHT_X_PAD = 3
+    DEFAULT_ANIM_DELAY = 10
 
     def __init__(self, game, player, text):
         self.game = game
         self.mug = self.game.create_entity()
         self.mug.add_comp(DrawComp(player.get_comp(PlayerComp).mug_sprites))
         self.mug.add_comp(PositionComp(0, 0))
+        self.mug.add_comp(AnimateComp(MugTextFrame.DEFAULT_ANIM_DELAY))
         self.text = text
 
     def update(self, region):

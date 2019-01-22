@@ -36,7 +36,6 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
-            SnowParticleUpdateSystem(self),
             PlayerUpdateSystem(self),
             AmmoUpdateSystem(self),
             PositionBoundBounceSystem(self),
@@ -48,7 +47,8 @@ class Game:
             DeadCleanupSystem(self),
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
-            DrawUpdateSystem(self)
+            DrawUpdateSystem(self),
+            SnowParticleUpdateSystem(self),
         ]
         self.webers = [
             # Benjamin,
@@ -168,7 +168,7 @@ class Game:
     def draw_stats(self, player):
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
-        draw_color = DARK_GRAY
+        draw_color = WHITE
         if player.has_comp(TopPlayerFlag):
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
