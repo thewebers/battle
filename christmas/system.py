@@ -231,3 +231,17 @@ class DrawUpdateSystem(System):
         for entity in entities:
             pos, draw = entity.get_comps(PositionComp, DrawComp)
             draw.rect.topleft = (pos.x, pos.y)
+
+
+class OrnamentUpdateSystem(System):
+    COMPS = [PositionComp, DrawComp, LifetimeComp, SizeComp]
+
+    def _run(self, entities):
+        # Spawn new ornament randomly.
+        # TODO
+        ornament = self.game.create_entity()
+        # Check ornament acquisition.
+        # TODO: Check if one is an ornament and the other a player. Add a new comp?
+        for entity in entities:
+            pos, draw = entity.get_comps(PositionComp, DrawComp)
+            draw.rect.topleft = (pos.x, pos.y)

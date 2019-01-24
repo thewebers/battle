@@ -10,18 +10,21 @@ from .entity import Entity
 from .image import load_images
 from .input_handler import TOP_PLAYER_INPUT_CONFIG
 from .player import Player, MoveOption
-from .projectile import BallsProjectile, FootballProjectile, JointProjectile
+from .projectile import BodhisattvaProjectile, RoadToRuinProjectile, IDontKnowWhatDoYouWannaDoProjectile
+
+
+# TODO: Projectiles.
 
 
 def _init_bodhisattva_bomb(player):
     for _ in range(3):
-        player.force_get_comp(AmmoComp).rounds.append(BallsProjectile)
+        player.force_get_comp(AmmoComp).rounds.append(BodhisattvaProjectile)
 
 def _init_the_road_to_ruin(player):
-    player.force_get_comp(AmmoComp).rounds.append(FootballProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(RoadToRuinProjectile)
 
 def _init_idkwdywd_move(player):
-    player.force_get_comp(AmmoComp).rounds.append(JointProjectile)
+    player.force_get_comp(AmmoComp).rounds.append(IDontKnowWhatDoYouWannaDoProjectile)
 
 
 class Janicolous:

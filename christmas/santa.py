@@ -12,6 +12,9 @@ from .player import Player, MoveOption
 from .projectile import CoalProjectile, BeerProjectile, ElfProjectile
 
 
+# TODO: Projectiles.
+
+
 def _init_coal_move(player):
     for _ in range(3):
         player.force_get_comp(AmmoComp).rounds.append(CoalProjectile)

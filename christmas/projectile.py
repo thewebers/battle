@@ -234,3 +234,34 @@ class SemenProjectile:
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
                         SemenProjectile.SPRITES, SemenProjectile.LIFETIME)
+
+
+class BodhisattvaBombProjectile:
+    SPRITES = load_images(['res/img/bodhi.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        BodhisattvaBombProjectile.SPRITES, BodhisattvaBombProjectile.LIFETIME)
+
+
+class RoadToRuinProjectile:
+    SPRITES = load_images(['res/img/road_to_ruin.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        RoadToRuinProjectile.SPRITES, RoadToRuinProjectile.LIFETIME)
+
+
+class IDontKnowWhatDoYouWannaDoProjectile:
+    SPRITES = load_images(['res/img/idkwdywd.png'], scale_factor=4)
+    LIFETIME = 60
+
+    @staticmethod
+    def init(entity, owner, x, y, xv, yv):
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        IDontKnowWhatDoYouWannaDoProjectile.SPRITES,
+                        IDontKnowWhatDoYouWannaDoProjectile.LIFETIME)
