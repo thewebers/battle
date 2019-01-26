@@ -13,9 +13,6 @@ from .player import Player, MoveOption
 from .projectile import BodhisattvaProjectile, RoadToRuinProjectile, IDontKnowWhatDoYouWannaDoProjectile
 
 
-# TODO: Projectiles.
-
-
 def _init_bodhisattva_bomb(player):
     for _ in range(3):
         player.force_get_comp(AmmoComp).rounds.append(BodhisattvaProjectile)
