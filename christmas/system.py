@@ -253,22 +253,29 @@ class OrnamentUpdateSystem(System):
 
 class AutonomousUpdateSystem(System):
     COMPS = [PositionComp, VelocityComp, PlayerComp]
-    VELOCITY_UPDATE = 2
+    VELOCITY_UPDATE = 0.5
 
     def _run(self, entities):
-        all_comps = [e.get_comps(PlayerComp, PositionComp, VelocityComp) \
-                     for e in entities]
-
-        for player, pos, vel in all_comps:
+        for e in entities:
+            player, pos, vel = e.get_comps(PlayerComp, PositionComp, \
+                                           VelocityComp)
             if player.autonomous == False:
                 continue
             if player.opponent_name is None:
-                AutonomousUpdateSystem.assign_opponent(player, all_comps)
-            AutonomousUpdateSystem.move_player(player, pos, vel, all_comps)
+                has_opp = AutonomousUpdateSystem.assign_opponent(e, entities)
+                if not has_opp:
+                    continue
+            AutonomousUpdateSystem.move_player(e, entities)
 
     @staticmethod
-    def move_player(player, pos, vel, all_comps):
-        opp_comps = AutonomousUpdateSystem.get_opponent(player, all_comps)
+    def move_player(entity, entities):
+        pos, vel = entity.get_comps(PositionComp, VelocityComp)
+        opp_entity = AutonomousUpdateSystem.get_opponent(entity, entities)
+        if opp_entity is None:
+            return
+        opp_comps = opp_entity.get_comps(PlayerComp, \
+                                         PositionComp, \
+                                         VelocityComp)
         if not opp_comps:
             # No opponent, so return.
             return
@@ -278,33 +285,36 @@ class AutonomousUpdateSystem(System):
         y_diff = pos.y - opp_pos.y
         # if random.random() < 0.5:
         if abs(x_diff) > abs(y_diff):
-            x_update = AutonomousUpdateSystem.VELOCITY_UPDATE
+            x_update = AutonomousUpdateSystem.VELOCITY_UPDATE * 1 ** -abs(x_diff)
             if x_diff < 0:
                 vel.x += x_update
             else:
                 vel.x -= x_update
         else:
-            y_update = AutonomousUpdateSystem.VELOCITY_UPDATE
+            y_update = AutonomousUpdateSystem.VELOCITY_UPDATE * 1 ** -abs(y_diff)
             if y_diff < 0:
                 vel.y += y_update
             else:
                 vel.y -= y_update
 
     @staticmethod
-    def get_opponent(player, all_comps):
-        for p, pos, vel in all_comps:
-            if player == p:
+    def get_opponent(entity, entities):
+        player = entity.get_comp(PlayerComp)
+        for e in entities:
+            other_player = e.get_comp(PlayerComp)
+            if player == other_player:
                 continue
-            if player.opponent_name == p.name:
-                return p, pos, vel
+            if player.opponent_name == other_player.name:
+                return e
         return None
 
     @staticmethod
-    def assign_opponent(entity, player, all_comps):
+    def assign_opponent(entity, entities):
         if not entity.has_comp(OwnerComp):
-            return None
-        owner = entity.get_comp(OwnerComp).owner
-        print(owner)
-        victims = [p for p, _, _ in all_comps if p is not player or not owner.name]
-        player.opponent_name = random.choice(victims).name
-        print('Bot opponent name = %s' % player.opponent_name)
+            return False
+        player = entity.get_comp(PlayerComp)
+        owner = entity.get_comp(OwnerComp).owner.get_comp(PlayerComp)
+        victims = list(filter(lambda e: e.get_comp(PlayerComp).name not in \
+                                        [player.name, owner.name], entities))
+        player.opponent_name = random.choice(victims).get_comp(PlayerComp).name
+        return True
