@@ -33,8 +33,6 @@ class Santa:
     SPRITES = load_images([
         'res/img/santa_back_1.png',
         'res/img/santa_back_2.png',
-        # 'res/santa_front_down.png',
-        # 'res/santa_front_up.png',
     ], scale_factor=4)
     MUG_ANIM_DELAY = 10
     MUG_SPRITES = load_images([
@@ -51,14 +49,11 @@ class Santa:
         'Woah. I sure can take a punch.',
         'That all? I wish... it was.',
         'Yeah sure, spill blood all over my HAND-CRAFTED SUIT?! COME ON!',
-        # TODO: The ones below are actually Luke's.
-        'Can we smoke a little weed?  My words get better.',
-        'When considering intelligence, you can be a retarded professional and still be retarded.'
     ]
     MOVES = [
         MoveOption('Coal', 'Coal in yo a-hole', _init_coal_move),
         MoveOption('Beer', 'Get fukn turnt, kids', _init_beer_move),
-        MoveOption('Elf', 'DAD!', _init_elf_move),
+        MoveOption('Elf', 'DAD! DYAAADDDD!!!!', _init_elf_move),
     ]
 
     @staticmethod

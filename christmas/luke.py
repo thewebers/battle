@@ -41,6 +41,8 @@ class Lucas:
         'I do much enjoy intercourse.',
         'I have a box of every Yu-Gi-Oh card on the planet, but we can\'t find it...',
         'Did you know I have a science lab right under my bed? Sorry, it only opens for me.',
+        'Can we smoke a little weed?  My words get better.',
+        'When considering intelligence, you can be a retarded professional and still be retarded.'
     ]
     MOVES = [
         MoveOption('LUBE TUBE', 'A bottle of canola oil saved for this very occasion.', _init_lube_tube_move),

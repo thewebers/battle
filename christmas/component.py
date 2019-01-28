@@ -38,7 +38,7 @@ class PlayerComp:
     MAX_POWER = 10
     MAX_DRUNKENNESS = 10
 
-    def __init__(self, name, quotes, moves, mug_sprites):
+    def __init__(self, name, quotes, moves, mug_sprites, autonomous=False):
         self.curr_health = PlayerComp.MAX_HEALTH
         self.max_health = PlayerComp.MAX_HEALTH
         self.curr_power = 0
@@ -49,10 +49,14 @@ class PlayerComp:
         self.quotes = quotes
         self.moves = moves
         self.mug_sprites = mug_sprites
+        self.autonomous = autonomous
+        self.opponent_name = None
 
 class PositionBoundComp(pg.Rect): pass
 
-PositionBoundBounceMultiplierComp = namedtuple('PositionBoundBounceMultiplierComp', ['multiplier'])
+PositionBoundBounceMultiplierComp = namedtuple(
+                        'PositionBoundBounceMultiplierComp',
+                        ['multiplier'])
 
 class OutOfBoundsComp(pg.Rect): pass
 
@@ -71,10 +75,8 @@ class AnimateComp:
         self.clock = 0
         self.delay = delay
 
-class SnowTargetComp:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+SnowTargetComp = namedtuple('SnowTargetComp', ['x', 'y'])
+
 
 # Flags
 

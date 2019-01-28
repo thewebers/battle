@@ -14,13 +14,15 @@ class Player:
     SPRITE_SCALE_FACTOR = 4
 
     @staticmethod
-    def init(entity, x, y, pos_bounds, sprites, name, quotes, moves, mug_sprites):
+    def init(entity, x, y, pos_bounds, sprites, name, quotes, moves, \
+             mug_sprites):
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(0.0, 0.0))
         entity.add_comp(MoveSpeedComp(Player.MOVE_SPEED))
         entity.add_comp(PlayerComp(name, quotes, moves, mug_sprites))
         entity.add_comp(PositionBoundComp(pos_bounds))
-        entity.add_comp(PositionBoundBounceMultiplierComp(Player.BOUNCE_MULTIPLIER))
+        entity.add_comp(PositionBoundBounceMultiplierComp( \
+                                                    Player.BOUNCE_MULTIPLIER))
         entity.add_comp(DrawComp(sprites))
         entity.add_comp(AnimateComp(Player.DEFAULT_ANIM_DELAY))
         entity.add_comp(SizeComp(sprites[0].get_width(),

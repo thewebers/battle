@@ -1,4 +1,5 @@
 import itertools
+import random
 
 from pygame.locals import *
 
@@ -203,9 +204,11 @@ class PlayerAnimateUpdateSystem(System):
 
     def _run(self, entities):
         for entity in entities:
-            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, AnimateComp)
+            vel, draw, anim = entity.get_comps(VelocityComp, DrawComp, \
+                                               AnimateComp)
             if (abs(vel.x) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD
-                and abs(vel.y) < PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
+                and abs(vel.y) < \
+                    PlayerAnimateUpdateSystem.IDLE_VELOCITY_THRESHOLD):
                 anim.delay = PlayerAnimateUpdateSystem.IDLE_ANIM_DELAY
             else:
                 anim.delay = PlayerAnimateUpdateSystem.MOVING_ANIM_DELAY
@@ -233,15 +236,75 @@ class DrawUpdateSystem(System):
             draw.rect.topleft = (pos.x, pos.y)
 
 
+# TODO: Unfnished business below.
+
+
 class OrnamentUpdateSystem(System):
     COMPS = [PositionComp, DrawComp, LifetimeComp, SizeComp]
 
     def _run(self, entities):
         # Spawn new ornament randomly.
-        # TODO
         ornament = self.game.create_entity()
         # Check ornament acquisition.
         # TODO: Check if one is an ornament and the other a player. Add a new comp?
         for entity in entities:
             pos, draw = entity.get_comps(PositionComp, DrawComp)
             draw.rect.topleft = (pos.x, pos.y)
+
+class AutonomousUpdateSystem(System):
+    COMPS = [PositionComp, VelocityComp, PlayerComp]
+    VELOCITY_UPDATE = 2
+
+    def _run(self, entities):
+        all_comps = [e.get_comps(PlayerComp, PositionComp, VelocityComp) \
+                     for e in entities]
+
+        for player, pos, vel in all_comps:
+            if player.autonomous == False:
+                continue
+            if player.opponent_name is None:
+                AutonomousUpdateSystem.assign_opponent(player, all_comps)
+            AutonomousUpdateSystem.move_player(player, pos, vel, all_comps)
+
+    @staticmethod
+    def move_player(player, pos, vel, all_comps):
+        opp_comps = AutonomousUpdateSystem.get_opponent(player, all_comps)
+        if not opp_comps:
+            # No opponent, so return.
+            return
+        # Move towards the opponent.
+        _, opp_pos, opp_vel = opp_comps
+        x_diff = pos.x - opp_pos.x
+        y_diff = pos.y - opp_pos.y
+        # if random.random() < 0.5:
+        if abs(x_diff) > abs(y_diff):
+            x_update = AutonomousUpdateSystem.VELOCITY_UPDATE
+            if x_diff < 0:
+                vel.x += x_update
+            else:
+                vel.x -= x_update
+        else:
+            y_update = AutonomousUpdateSystem.VELOCITY_UPDATE
+            if y_diff < 0:
+                vel.y += y_update
+            else:
+                vel.y -= y_update
+
+    @staticmethod
+    def get_opponent(player, all_comps):
+        for p, pos, vel in all_comps:
+            if player == p:
+                continue
+            if player.opponent_name == p.name:
+                return p, pos, vel
+        return None
+
+    @staticmethod
+    def assign_opponent(entity, player, all_comps):
+        if not entity.has_comp(OwnerComp):
+            return None
+        owner = entity.get_comp(OwnerComp).owner
+        print(owner)
+        victims = [p for p, _, _ in all_comps if p is not player or not owner.name]
+        player.opponent_name = random.choice(victims).name
+        print('Bot opponent name = %s' % player.opponent_name)

@@ -9,21 +9,37 @@ from .util import make_color_surface
 class Projectile:
     BOUNCE_MULTIPLIER = 1
 
+    @staticmethod
     def static_init(width, height):
         Projectile.POS_BOUND = pg.Rect(0, 0, width, height)
 
+    @staticmethod
     def init(entity, owner, x, y, xv, yv, sprites, lifetime):
         entity.add_comp(PositionComp(x, y))
         entity.add_comp(VelocityComp(xv, yv))
         entity.add_comp(CollideFlag())
         entity.add_comp(ProjectileFlag())
         entity.add_comp(PositionBoundComp(Projectile.POS_BOUND))
-        entity.add_comp(PositionBoundBounceMultiplierComp(Projectile.BOUNCE_MULTIPLIER))
+        entity.add_comp(PositionBoundBounceMultiplierComp(
+                        Projectile.BOUNCE_MULTIPLIER))
         entity.add_comp(OwnerComp(owner))
         entity.add_comp(LifetimeComp(lifetime))
         entity.add_comp(DrawComp(sprites))
         entity.add_comp(SizeComp(sprites[0].get_width(),
                                  sprites[0].get_height()))
+
+
+class BotProjectile(Projectile):
+    BOUNCE_MULTIPLIER = 1
+
+    @staticmethod
+    def static_init(width, height):
+        Projectile.static_init(width, height)
+
+    @staticmethod
+    def init(entity, name, owner, x, y, xv, yv, sprites, lifetime):
+        Projectile.init(entity, owner, x, y, xv, yv, sprites, lifetime)
+        entity.add_comp(PlayerComp(name, None, None, None, True))
 
 
 class CoalProjectile:
@@ -34,7 +50,9 @@ class CoalProjectile:
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
-        Projectile.init(entity, owner, x, y, xv, yv, CoalProjectile.SPRITES, CoalProjectile.LIFETIME)
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        CoalProjectile.SPRITES,
+                        CoalProjectile.LIFETIME)
 
 
 class BeerProjectile:
@@ -48,13 +66,14 @@ class BeerProjectile:
 
 
 class ElfProjectile:
-    SPRITES = [make_color_surface((100, 100), GREEN)]
-    LIFETIME = 60
+    SPRITES = [make_color_surface((10, 20), GREEN)]
+    LIFETIME = 1000
+    BOT_NAME = 'Buddy'
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
-        Projectile.init(entity, owner, x, y, xv, yv,
-                        ElfProjectile.SPRITES, ElfProjectile.LIFETIME)
+        BotProjectile.init(entity, ElfProjectile.BOT_NAME, owner, x, y, xv, yv,
+                           ElfProjectile.SPRITES, ElfProjectile.LIFETIME)
 
 
 class BallsProjectile:
@@ -74,7 +93,8 @@ class FootballProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        FootballProjectile.SPRITES, FootballProjectile.LIFETIME)
+                        FootballProjectile.SPRITES,
+                        FootballProjectile.LIFETIME)
 
 
 class JointProjectile:
@@ -83,7 +103,9 @@ class JointProjectile:
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
-        Projectile.init(entity, owner, x, y, xv, yv, JointProjectile.SPRITES, JointProjectile.LIFETIME)
+        Projectile.init(entity, owner, x, y, xv, yv,
+                        JointProjectile.SPRITES,
+                        JointProjectile.LIFETIME)
 
 
 class DumbbellProjectile:
@@ -93,7 +115,8 @@ class DumbbellProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        DumbbellProjectile.SPRITES, DumbbellProjectile.LIFETIME)
+                        DumbbellProjectile.SPRITES,
+                        DumbbellProjectile.LIFETIME)
 
 
 class FinancialReportProjectile:
@@ -103,7 +126,8 @@ class FinancialReportProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        FinancialReportProjectile.SPRITES, FinancialReportProjectile.LIFETIME)
+                        FinancialReportProjectile.SPRITES,
+                        FinancialReportProjectile.LIFETIME)
 
 
 class HayBaleProjectile:
@@ -123,7 +147,8 @@ class RockPileProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        RockPileProjectile.SPRITES, RockPileProjectile.LIFETIME)
+                        RockPileProjectile.SPRITES,
+                        RockPileProjectile.LIFETIME)
 
 
 class GiftOfLifeProjectile:
@@ -133,7 +158,8 @@ class GiftOfLifeProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        GiftOfLifeProjectile.SPRITES, GiftOfLifeProjectile.LIFETIME)
+                        GiftOfLifeProjectile.SPRITES,
+                        GiftOfLifeProjectile.LIFETIME)
 
 
 class MrSpoonProjectile:
@@ -153,7 +179,8 @@ class BreakdanceTornadoProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        BreakdanceTornadoProjectile.SPRITES, BreakdanceTornadoProjectile.LIFETIME)
+                        BreakdanceTornadoProjectile.SPRITES,
+                        BreakdanceTornadoProjectile.LIFETIME)
 
 
 class SilentNightProjectile:
@@ -163,7 +190,8 @@ class SilentNightProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        SilentNightProjectile.SPRITES, SilentNightProjectile.LIFETIME)
+                        SilentNightProjectile.SPRITES,
+                        SilentNightProjectile.LIFETIME)
 
 
 class GrayEyebrowProjectile:
@@ -173,7 +201,8 @@ class GrayEyebrowProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        GrayEyebrowProjectile.SPRITES, GrayEyebrowProjectile.LIFETIME)
+                        GrayEyebrowProjectile.SPRITES,
+                        GrayEyebrowProjectile.LIFETIME)
 
 
 class LubeTubeProjectile:
@@ -183,7 +212,8 @@ class LubeTubeProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        LubeTubeProjectile.SPRITES, LubeTubeProjectile.LIFETIME)
+                        LubeTubeProjectile.SPRITES,
+                        LubeTubeProjectile.LIFETIME)
 
 
 class ProteinShakeProjectile:
@@ -193,7 +223,8 @@ class ProteinShakeProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        ProteinShakeProjectile.SPRITES, ProteinShakeProjectile.LIFETIME)
+                        ProteinShakeProjectile.SPRITES,
+                        ProteinShakeProjectile.LIFETIME)
 
 
 class RobotProjectile:
@@ -223,7 +254,8 @@ class LiteratureProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        LiteratureProjectile.SPRITES, LiteratureProjectile.LIFETIME)
+                        LiteratureProjectile.SPRITES,
+                        LiteratureProjectile.LIFETIME)
 
 
 class SemenProjectile:
@@ -233,17 +265,19 @@ class SemenProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        SemenProjectile.SPRITES, SemenProjectile.LIFETIME)
+                        SemenProjectile.SPRITES,
+                        SemenProjectile.LIFETIME)
 
 
-class BodhisattvaBombProjectile:
+class BodhisattvaProjectile:
     SPRITES = load_images(['res/img/bodhi.png'], scale_factor=4)
     LIFETIME = 60
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        BodhisattvaBombProjectile.SPRITES, BodhisattvaBombProjectile.LIFETIME)
+                        BodhisattvaProjectile.SPRITES,
+                        BodhisattvaProjectile.LIFETIME)
 
 
 class RoadToRuinProjectile:
@@ -253,7 +287,8 @@ class RoadToRuinProjectile:
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         Projectile.init(entity, owner, x, y, xv, yv,
-                        RoadToRuinProjectile.SPRITES, RoadToRuinProjectile.LIFETIME)
+                        RoadToRuinProjectile.SPRITES,
+                        RoadToRuinProjectile.LIFETIME)
 
 
 class IDontKnowWhatDoYouWannaDoProjectile:

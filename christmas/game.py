@@ -37,6 +37,7 @@ class Game:
         self.height = height
         self.systems = [
             PlayerUpdateSystem(self),
+            AutonomousUpdateSystem(self),
             AmmoUpdateSystem(self),
             PositionBoundBounceSystem(self),
             CollideSystem(self),
@@ -53,8 +54,8 @@ class Game:
         self.webers = [
             # Benjamin,
             # DeAnne,
-            # Janicolous,
-            Joshua,
+            Janicolous,
+            # Joshua,
             # Logan,
             # Lucas,
             # Robert
@@ -84,9 +85,12 @@ class Game:
         # NB: The dialog window is between the top region and the bottom region.
         self.dialog_window = DialogWindow(self.width, self.height, self.font)
         dialog_rect = self.dialog_window.get_rect()
-        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, DARK_GRAY)
-        self.bottom_region = DrawRect(0, dialog_rect.bottom,
-                                      self.width, self.height - dialog_rect.bottom,
+        self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, \
+                                   DARK_GRAY)
+        self.bottom_region = DrawRect(0,
+                                      dialog_rect.bottom,
+                                      self.width,
+                                      self.height - dialog_rect.bottom,
                                       DARK_GRAY)
 
         # We only use a single PyGame group for all of our rendering, because
@@ -100,7 +104,8 @@ class Game:
         # Initialize a Weber.
         weber_x, weber_y = self.top_region.center
         self.top_player = self.create_entity()
-        random.choice(self.webers).init(self.top_player, weber_x, weber_y, self.top_region)
+        random.choice(self.webers).init(self.top_player, weber_x, weber_y, \
+                                        self.top_region)
         weber_pos = self.top_player.get_comp(PositionComp)
         weber_pos.x -= self.top_player.get_comp(SizeComp).w / 2
         weber_pos.y -= self.top_player.get_comp(SizeComp).h / 2
@@ -113,11 +118,13 @@ class Game:
         santa_pos.x -= self.bottom_player.get_comp(SizeComp).w / 2
         santa_pos.y -= self.bottom_player.get_comp(SizeComp).h / 2
 
-        # The director needs to be initted *after* the players have been initted.
+        # The director needs to be initted *after* the players have been
+        # initted.
         self.director = Director(self)
 
         # Initialize snowglobe.
-        self.globe = SnowGlobe(self.width, self.height, self.create_entity, debug_mode=self._debug_mode)
+        self.globe = SnowGlobe(self.width, self.height, self.create_entity, \
+                               debug_mode=self._debug_mode)
 
     def run(self):
         while True:
@@ -171,7 +178,8 @@ class Game:
         draw_color = WHITE
         if player.has_comp(TopPlayerFlag):
             pos_args = [
-                lambda _: { 'bottomright': (pos_bounds.w - PADDING, pos_bounds.h - PADDING) },
+                lambda _: { 'bottomright': (pos_bounds.w - PADDING, \
+                                            pos_bounds.h - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
             ]
