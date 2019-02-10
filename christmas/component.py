@@ -77,6 +77,9 @@ class AnimateComp:
 
 SnowTargetComp = namedtuple('SnowTargetComp', ['x', 'y'])
 
+class MemoryComp:
+    def __init__(self, memory=dict()):
+        self.memory = memory
 
 # Flags
 

@@ -1,4 +1,6 @@
+
 import itertools
+import math
 import random
 
 from pygame.locals import *
@@ -253,14 +255,14 @@ class OrnamentUpdateSystem(System):
 
 class AutonomousUpdateSystem(System):
     COMPS = [PositionComp, VelocityComp, PlayerComp]
-    VELOCITY_UPDATE = 0.5
+    VELOCITY_UPDATE = 5
 
     def _run(self, entities):
         for e in entities:
             player, pos, vel = e.get_comps(PlayerComp, PositionComp, \
                                            VelocityComp)
             if player.autonomous == False:
-                continue
+                continue # we don't like normies.
             if player.opponent_name is None:
                 has_opp = AutonomousUpdateSystem.assign_opponent(e, entities)
                 if not has_opp:
@@ -279,23 +281,34 @@ class AutonomousUpdateSystem(System):
         if not opp_comps:
             # No opponent, so return.
             return
+        # Check memory for past moves.
+        mem_comp = entity.get_comp(MemoryComp)
+        update_rate = mem_comp.memory.get('update_rate')
+        counter = mem_comp.memory.get('counter', 0)
+        update_vect = mem_comp.memory.get('update_vect', [0.0, 0.0])
+        mem_comp.memory['counter'] = counter + 1
+        # Stick in straight line before counter cycles.
+        if counter % update_rate != 0:
+            # vel.x = update_vect[0]
+            # vel.y = update_vect[1]
+            return
         # Move towards the opponent.
         _, opp_pos, opp_vel = opp_comps
-        x_diff = pos.x - opp_pos.x
-        y_diff = pos.y - opp_pos.y
-        # if random.random() < 0.5:
+        x_diff = opp_pos.x - pos.x
+        y_diff = opp_pos.y - pos.y
         if abs(x_diff) > abs(y_diff):
-            x_update = AutonomousUpdateSystem.VELOCITY_UPDATE * 1 ** -abs(x_diff)
-            if x_diff < 0:
-                vel.x += x_update
-            else:
-                vel.x -= x_update
+            update_vect[0] = math.copysign(1, x_diff) * \
+                             AutonomousUpdateSystem.VELOCITY_UPDATE * \
+                             (1 + 1 ** -(abs(x_diff)))
+            update_vect[1] = 0
         else:
-            y_update = AutonomousUpdateSystem.VELOCITY_UPDATE * 1 ** -abs(y_diff)
-            if y_diff < 0:
-                vel.y += y_update
-            else:
-                vel.y -= y_update
+            update_vect[0] = 0
+            update_vect[1] = math.copysign(1, y_diff) * \
+                             AutonomousUpdateSystem.VELOCITY_UPDATE * \
+                             (1 + 1 ** -(abs(y_diff)))
+        vel.x = update_vect[0]
+        vel.y = update_vect[1]
+        mem_comp.memory['update_vect'] = update_vect
 
     @staticmethod
     def get_opponent(entity, entities):

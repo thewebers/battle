@@ -31,6 +31,7 @@ class Projectile:
 
 class BotProjectile(Projectile):
     BOUNCE_MULTIPLIER = 1
+    UPDATE_RATE = 10
 
     @staticmethod
     def static_init(width, height):
@@ -40,6 +41,9 @@ class BotProjectile(Projectile):
     def init(entity, name, owner, x, y, xv, yv, sprites, lifetime):
         Projectile.init(entity, owner, x, y, xv, yv, sprites, lifetime)
         entity.add_comp(PlayerComp(name, None, None, None, True))
+        entity.add_comp(MemoryComp({
+            'update_rate': BotProjectile.UPDATE_RATE
+            }))
 
 
 class CoalProjectile:
