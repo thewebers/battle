@@ -80,10 +80,10 @@ class ElfProjectile:
     SPRITES = load_images([
         'res/img/buddy_1.png',
         'res/img/buddy_2.png',
-    ], scale_factor=8)
+    ], scale_factor=4)
     LIFETIME = 1000
     BOT_NAME = 'Buddy'
-    SPEED = 2
+    SPEED = 3
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):

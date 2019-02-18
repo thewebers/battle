@@ -1,4 +1,6 @@
-# Characters
+# An Ordinary Weber Christmas
+
+![](/res/img/gameplay.gif)
 
 ## Benjamin
 
@@ -40,7 +42,7 @@
 
 ## Logan
 - Breakdance Tornado: Plays Safety Dance hook and shoots out toxic semen.
-- SILENT NIGHT: "You've done something aribtrarily wrong and now Logan's giving you the silent treatment. Congrats." 
+- SILENT NIGHT: "You've done something aribtrarily wrong and now Logan's giving you the silent treatment. Congrats."
     - Entity: Ghost of Logan.
     - Effect: Logan goes invisible and he can not attack or be
 - **EMOTIONAL ATTACK: 25% chance Logan's words get to santa and Santa commits suicide. Show the actual words that Logan says to Santa.**
