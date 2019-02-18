@@ -4,6 +4,7 @@ from .color import *
 from .component import *
 from .image import load_images
 from .util import make_color_surface
+from .player import Player
 
 
 class Projectile:
@@ -29,21 +30,25 @@ class Projectile:
                                  sprites[0].get_height()))
 
 
+# TODO: Move bot stuff to its own file.
 class BotProjectile(Projectile):
     BOUNCE_MULTIPLIER = 1
     UPDATE_RATE = 10
+    ANIM_DELAY = Player.DEFAULT_ANIM_DELAY * 4
 
     @staticmethod
     def static_init(width, height):
         Projectile.static_init(width, height)
 
     @staticmethod
-    def init(entity, name, owner, x, y, xv, yv, sprites, lifetime):
+    def init(entity, name, owner, x, y, xv, yv, sprites, lifetime, speed):
         Projectile.init(entity, owner, x, y, xv, yv, sprites, lifetime)
-        entity.add_comp(PlayerComp(name, None, None, None, True))
+        entity.add_comp(PlayerComp(name, None, None, sprites, True))
+        entity.add_comp(AnimateComp(BotProjectile.ANIM_DELAY))
         entity.add_comp(MemoryComp({
-            'update_rate': BotProjectile.UPDATE_RATE
-            }))
+            'update_rate': BotProjectile.UPDATE_RATE,
+            'speed': speed
+        }))
 
 
 class CoalProjectile:
@@ -60,7 +65,9 @@ class CoalProjectile:
 
 
 class BeerProjectile:
-    SPRITES = [make_color_surface((80, 80), YELLOW)]
+    SPRITES = load_images([
+        'res/img/beer.png',
+    ], scale_factor=4)
     LIFETIME = 60
 
     @staticmethod
@@ -70,14 +77,19 @@ class BeerProjectile:
 
 
 class ElfProjectile:
-    SPRITES = [make_color_surface((10, 20), GREEN)]
+    SPRITES = load_images([
+        'res/img/buddy_1.png',
+        'res/img/buddy_2.png',
+    ], scale_factor=8)
     LIFETIME = 1000
     BOT_NAME = 'Buddy'
+    SPEED = 2
 
     @staticmethod
     def init(entity, owner, x, y, xv, yv):
         BotProjectile.init(entity, ElfProjectile.BOT_NAME, owner, x, y, xv, yv,
-                           ElfProjectile.SPRITES, ElfProjectile.LIFETIME)
+                           ElfProjectile.SPRITES, ElfProjectile.LIFETIME,
+                           ElfProjectile.SPEED)
 
 
 class BallsProjectile:

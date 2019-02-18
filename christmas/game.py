@@ -29,7 +29,9 @@ FPS = 30
 
 class Game:
     """Handles all game logic and interfaces with UI via pygame."""
-    title = 'Another Ordinary Weber Christmas'
+    TITLE = 'Another Ordinary Weber Christmas'
+    FG_COLOR = GRAY
+    BG_COLOR = WHITE
 
     def __init__(self, width, height, debug_mode=False):
         self._debug_mode = debug_mode
@@ -50,15 +52,16 @@ class Game:
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self),
             SnowParticleUpdateSystem(self),
+            ScheduleSystem(self),
         ]
         self.webers = [
-            # Benjamin,
-            # DeAnne,
+            Benjamin,
+            DeAnne,
             Janicolous,
-            # Joshua,
-            # Logan,
-            # Lucas,
-            # Robert
+            Joshua,
+            Logan,
+            Lucas,
+            Robert
         ]
         self.entities = []
         self.input_handler = InputHandler()
@@ -76,22 +79,23 @@ class Game:
 
         # Window
         self.screen = pg.display.set_mode((self.width, self.height))
-        pg.display.set_caption(self.title)
+        pg.display.set_caption(Game.TITLE)
         pg.mouse.set_visible(False)
         self.font = pg.font.Font('res/font/8-bitpusab.ttf', 10)
         self.clock = pg.time.Clock()
 
         # Compute player/dialog regions.
         # NB: The dialog window is between the top region and the bottom region.
-        self.dialog_window = DialogWindow(self.width, self.height, self.font)
+        self.dialog_window = DialogWindow(self.width, self.height, self.font,
+                                          self.FG_COLOR, GREEN)
         dialog_rect = self.dialog_window.get_rect()
         self.top_region = DrawRect(0, 0, self.width, dialog_rect.top, \
-                                   DARK_GRAY)
+                                   Game.BG_COLOR)
         self.bottom_region = DrawRect(0,
                                       dialog_rect.bottom,
                                       self.width,
                                       self.height - dialog_rect.bottom,
-                                      DARK_GRAY)
+                                      Game.BG_COLOR)
 
         # We only use a single PyGame group for all of our rendering, because
         # we have our own ECS architecture for organizing entities.
@@ -121,6 +125,13 @@ class Game:
         # The director needs to be initted *after* the players have been
         # initted.
         self.director = Director(self)
+
+        # Create ornament spawning job, as system.
+        ornament_job_entity = self.create_entity()
+        ornament_job_entity.add_comp(JobScheduleComp('spawn_orn', 30000, 2000))
+        beer_job_entity = self.create_entity()
+        beer_job_entity.add_comp(JobScheduleComp('spawn_beer', 60000,
+                                                     10000))
 
         # Initialize snowglobe.
         self.globe = SnowGlobe(self.width, self.height, self.create_entity, \
@@ -175,7 +186,7 @@ class Game:
     def draw_stats(self, player):
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
-        draw_color = WHITE
+        draw_color = Game.FG_COLOR
         if player.has_comp(TopPlayerFlag):
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, \

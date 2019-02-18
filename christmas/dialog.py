@@ -11,10 +11,10 @@ BG_COLOR = WHITE
 class DialogWindow:
     HEIGHT = 100
 
-    def __init__(self, screen_width, screen_height, font):
+    def __init__(self, screen_width, screen_height, font, fg_color, bg_color):
         window_top = (screen_height - DialogWindow.HEIGHT) / 2
         window_bottom = window_top + DialogWindow.HEIGHT
-        self.screen_region = DrawRect(0, window_top, screen_width, DialogWindow.HEIGHT, BG_COLOR)
+        self.screen_region = DrawRect(0, window_top, screen_width, DialogWindow.HEIGHT, bg_color)
         self.font = font
         self.frame = EmptyFrame()
 

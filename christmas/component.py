@@ -1,5 +1,6 @@
 from collections import deque, namedtuple
 
+import numpy as np
 import pygame as pg
 
 
@@ -80,6 +81,18 @@ SnowTargetComp = namedtuple('SnowTargetComp', ['x', 'y'])
 class MemoryComp:
     def __init__(self, memory=dict()):
         self.memory = memory
+
+class JobScheduleComp:
+    def __init__(self, f, period, std_dev):
+        self.f = f
+        self.period = period
+        self.std_dev = std_dev
+        self.reset()
+    def reset(self, t=0):
+        self.tick_time = np.random.normal(t + self.period, self.std_dev)
+
+ItemComp = namedtuple('ItemTypeComp', [])
+
 
 # Flags
 

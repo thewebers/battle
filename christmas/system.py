@@ -3,10 +3,12 @@ import itertools
 import math
 import random
 
+import numpy as np
 from pygame.locals import *
 
 from .component import *
 from .input_handler import InputIntent
+from .item import *
 
 
 class System:
@@ -16,7 +18,8 @@ class System:
     def run(self):
         filtered_entities = [entity for entity in self.game.entities
                              if entity is not None and
-                             all(map(lambda c: entity.has_comp(c), self.COMPS))]
+                             all(map(lambda c: entity.has_comp(c),
+                                     self.COMPS))]
         self._run(filtered_entities)
 
     def _run(self, *_):
@@ -238,24 +241,46 @@ class DrawUpdateSystem(System):
             draw.rect.topleft = (pos.x, pos.y)
 
 
-# TODO: Unfnished business below.
-
-
-class OrnamentUpdateSystem(System):
-    COMPS = [PositionComp, DrawComp, LifetimeComp, SizeComp]
-
+class ScheduleSystem(System):
+    COMPS = [JobScheduleComp]
+    def __init__(self, game):
+        super().__init__(game)
+        self.funcs = {'spawn_orn': lambda: OrnamentItem.init(
+                                           self.game.create_entity(),
+                                           self.get_rand_pos()),
+                      'spawn_beer': lambda: BeerItem.init(
+                                           self.game.create_entity(),
+                                           self.get_rand_pos())
+                     }
+    def get_rand_pos(self):
+        return np.random.randint(self.game.width), \
+               np.random.randint(self.game.height)
     def _run(self, entities):
-        # Spawn new ornament randomly.
-        ornament = self.game.create_entity()
-        # Check ornament acquisition.
-        # TODO: Check if one is an ornament and the other a player. Add a new comp?
+        t = pg.time.get_ticks()
         for entity in entities:
-            pos, draw = entity.get_comps(PositionComp, DrawComp)
-            draw.rect.topleft = (pos.x, pos.y)
+            job_sch = entity.get_comp(JobScheduleComp)
+            if t >= job_sch.tick_time:
+                self.funcs[job_sch.f]()
+                job_sch.reset(t)
+
+
+# TODO: Unfnished business below.
+# class OrnamentUpdateSystem(System):
+#     COMPS = [PositionComp, DrawComp, LifetimeComp, SizeComp]
+
+#     def _run(self, entities):
+#         # Spawn new ornament randomly.
+#         ornament = self.game.create_entity()
+#         # Check ornament acquisition.
+#         # TODO: Check if one is an ornament and the other a player. Add a new comp?
+#         for entity in entities:
+#             pos, draw = entity.get_comps(PositionComp, DrawComp)
+#             draw.rect.topleft = (pos.x, pos.y)
+
 
 class AutonomousUpdateSystem(System):
     COMPS = [PositionComp, VelocityComp, PlayerComp]
-    VELOCITY_UPDATE = 5
+    DEFAULT_SPEED = 1
 
     def _run(self, entities):
         for e in entities:
@@ -285,6 +310,8 @@ class AutonomousUpdateSystem(System):
         mem_comp = entity.get_comp(MemoryComp)
         update_rate = mem_comp.memory.get('update_rate')
         counter = mem_comp.memory.get('counter', 0)
+        speed = mem_comp.memory.get('speed', \
+                                        AutonomousUpdateSystem.DEFAULT_SPEED)
         update_vect = mem_comp.memory.get('update_vect', [0.0, 0.0])
         mem_comp.memory['counter'] = counter + 1
         # Stick in straight line before counter cycles.
@@ -298,13 +325,13 @@ class AutonomousUpdateSystem(System):
         y_diff = opp_pos.y - pos.y
         if abs(x_diff) > abs(y_diff):
             update_vect[0] = math.copysign(1, x_diff) * \
-                             AutonomousUpdateSystem.VELOCITY_UPDATE * \
+                             speed * \
                              (1 + 1 ** -(abs(x_diff)))
             update_vect[1] = 0
         else:
             update_vect[0] = 0
             update_vect[1] = math.copysign(1, y_diff) * \
-                             AutonomousUpdateSystem.VELOCITY_UPDATE * \
+                             speed * \
                              (1 + 1 ** -(abs(y_diff)))
         vel.x = update_vect[0]
         vel.y = update_vect[1]
