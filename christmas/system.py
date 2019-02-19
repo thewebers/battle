@@ -9,6 +9,7 @@ from pygame.locals import *
 from .component import *
 from .input_handler import InputIntent
 from .item import *
+from .particle import BubbleParticle
 
 
 class System:
@@ -263,6 +264,35 @@ class ScheduleSystem(System):
                 self.funcs[job_sch.f]()
                 job_sch.reset(t)
 
+
+class ParticleSystem(System):
+    COMPS = [ParticleSourceComp, PositionComp, VelocityComp]
+    DEFAULT_SPEED = 1
+
+    def _run(self, entities):
+        for e in entities:
+            src, pos, vel = e.get_comps(ParticleSourceComp,
+                                        PositionComp,
+                                        VelocityComp)
+            self._gen_particle_cloud(src, pos, vel)
+
+    def _gen_particle_cloud(self, src, pos, vel):
+        if src.type != 'drunk':
+            raise NotImplementedError('Only drunkenness is supported now.')
+
+        if np.random.rand() > 0.1:
+            return
+
+        # TODO: Generate particle cloud.
+        num = np.random.randint(src.intensity)
+        if num == 0:
+            return
+
+        mean = [pos.x, pos.y]
+        variance = 50
+        cov = [[variance, 0], [0, variance]]
+        for p_pos in np.random.multivariate_normal(mean, cov, num):
+            BubbleParticle.init(self.game.create_entity(), p_pos)
 
 # TODO: Unfnished business below.
 # class OrnamentUpdateSystem(System):

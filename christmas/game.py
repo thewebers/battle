@@ -38,6 +38,9 @@ class Game:
         self.width = width
         self.height = height
         self.systems = [
+            SnowParticleUpdateSystem(self),
+            ScheduleSystem(self),
+            ParticleSystem(self),
             PlayerUpdateSystem(self),
             AutonomousUpdateSystem(self),
             AmmoUpdateSystem(self),
@@ -51,8 +54,6 @@ class Game:
             PlayerAnimateUpdateSystem(self),
             AnimateUpdateSystem(self),
             DrawUpdateSystem(self),
-            SnowParticleUpdateSystem(self),
-            ScheduleSystem(self),
         ]
         self.webers = [
             Benjamin,

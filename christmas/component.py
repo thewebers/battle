@@ -93,6 +93,8 @@ class JobScheduleComp:
 
 ItemComp = namedtuple('ItemTypeComp', [])
 
+ParticleSourceComp = namedtuple('DrunkComp', ['type', 'intensity'])
+
 
 # Flags
 
@@ -125,4 +127,3 @@ class VelocityAttenuateFlag: pass
 class OutOfBoundsKillFlag: pass
 
 class DeadFlag: pass
-

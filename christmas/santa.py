@@ -55,12 +55,15 @@ class Santa:
         MoveOption('Beer', 'Get fukn turnt, kids', _init_beer_move),
         MoveOption('Elf', 'DAD! DYAAADDDD!!!!', _init_elf_move),
     ]
+    STARTING_DRUNKENNESS = 5
 
     @staticmethod
     def init(entity, x, y, pos_bounds):
         Player.init(entity, x, y, pos_bounds, Santa.SPRITES,
                     Santa.NAME, Santa.QUOTES, Santa.MOVES,
                     Santa.MUG_SPRITES)
+        entity.add_comp(ParticleSourceComp('drunk',
+                                           Santa.STARTING_DRUNKENNESS))
         entity.add_comp(BottomPlayerFlag())
         entity.add_comp(InputConfigComp(BOTTOM_PLAYER_INPUT_CONFIG))
         entity.add_comp(SantaFlag())
