@@ -41,32 +41,18 @@ class SnowParticleUpdateSystem(System):
             pos.y += vel.y
 
 
-class TopPlayerUpdateSystem(System):
-    COMPS = [VelocityComp, TopPlayerFlag]
+class PlayerUpdateSystem(System):
+    COMPS = [PlayerComp, VelocityComp, MoveSpeedComp, InputConfigComp]
     MOVE_SPEED = 5.0
 
     def _run(self, entities):
-        assert(len(entities) == 1)
         inp_handler = self.game.get_input_handler()
         for entity in entities:
-            vel = entity.get_comp(VelocityComp)
-            if inp_handler.is_key_pressed(K_w):
-                vel.y -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_s):
-                vel.y += TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_a):
-                vel.x -= TopPlayerUpdateSystem.MOVE_SPEED
-            if inp_handler.is_key_pressed(K_d):
-                vel.x += TopPlayerUpdateSystem.MOVE_SPEED
-
-
-class PlayerUpdateSystem(System):
-    COMPS = [VelocityComp, MoveSpeedComp, InputConfigComp]
-
-    def _run(self, entities):
-        inp_handler = self.game.get_input_handler()
-        for entity in entities:
-            vel, speed, inp_conf = entity.get_comps(VelocityComp, MoveSpeedComp, InputConfigComp)
+            vel, speed, inp_conf = entity.get_comps(VelocityComp,  \
+                                                    MoveSpeedComp, \
+                                                    InputConfigComp)
+            if entity.has_comp(AutoComp):
+                return
             speed = speed.speed
             if inp_handler.is_key_down(inp_conf.key_map[InputIntent.UP]):
                 vel.y -= speed
@@ -316,56 +302,39 @@ class AutonomousUpdateSystem(System):
         for e in entities:
             player, pos, vel = e.get_comps(PlayerComp, PositionComp, \
                                            VelocityComp)
-            if player.autonomous == False:
-                continue # we don't like normies.
-            if player.opponent_name is None:
-                has_opp = AutonomousUpdateSystem.assign_opponent(e, entities)
-                if not has_opp:
-                    continue
+            if not e.has_comp(AutoComp):
+                continue # We don't like normies.
+            has_opp = AutonomousUpdateSystem.assign_opponent(e, entities)
+            if not has_opp:
+                continue
             AutonomousUpdateSystem.move_player(e, entities)
 
     @staticmethod
     def move_player(entity, entities):
         pos, vel = entity.get_comps(PositionComp, VelocityComp)
         opp_entity = AutonomousUpdateSystem.get_opponent(entity, entities)
-        if opp_entity is None:
-            return
-        opp_comps = opp_entity.get_comps(PlayerComp, \
+        opp_comps = opp_entity.get_comps(PlayerComp,   \
                                          PositionComp, \
                                          VelocityComp)
         if not opp_comps:
             # No opponent, so return.
             return
-        # Check memory for past moves.
-        mem_comp = entity.get_comp(MemoryComp)
-        update_rate = mem_comp.memory.get('update_rate')
-        counter = mem_comp.memory.get('counter', 0)
-        speed = mem_comp.memory.get('speed', \
-                                        AutonomousUpdateSystem.DEFAULT_SPEED)
-        update_vect = mem_comp.memory.get('update_vect', [0.0, 0.0])
-        mem_comp.memory['counter'] = counter + 1
-        # Stick in straight line before counter cycles.
-        if counter % update_rate != 0:
-            # vel.x = update_vect[0]
-            # vel.y = update_vect[1]
-            return
-        # Move towards the opponent.
+        auto = entity.get_comp(AutoComp)
+        # Package up input from game and let model choose next state.
         _, opp_pos, opp_vel = opp_comps
-        x_diff = opp_pos.x - pos.x
-        y_diff = opp_pos.y - pos.y
-        if abs(x_diff) > abs(y_diff):
-            update_vect[0] = math.copysign(1, x_diff) * \
-                             speed * \
-                             (1 + 1 ** -(abs(x_diff)))
-            update_vect[1] = 0
-        else:
-            update_vect[0] = 0
-            update_vect[1] = math.copysign(1, y_diff) * \
-                             speed * \
-                             (1 + 1 ** -(abs(y_diff)))
+        eingan = {
+            't': pg.time.get_ticks(),
+            'pos': pos,
+            'vel': vel,
+            'opp_pos': opp_pos,
+            'opp_vel': opp_vel,
+        }
+        update_vect = auto.model.act(eingan)
         vel.x = update_vect[0]
         vel.y = update_vect[1]
-        mem_comp.memory['update_vect'] = update_vect
+        experience = () # TODO
+        auto.model.step(experience)
+
 
     @staticmethod
     def get_opponent(entity, entities):

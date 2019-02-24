@@ -64,6 +64,7 @@ class Santa:
                     Santa.MUG_SPRITES)
         entity.add_comp(ParticleSourceComp('drunk',
                                            Santa.STARTING_DRUNKENNESS))
-        entity.add_comp(BottomPlayerFlag())
+        entity.add_comp(BottomPlayerComp())
         entity.add_comp(InputConfigComp(BOTTOM_PLAYER_INPUT_CONFIG))
         entity.add_comp(SantaFlag())
+        entity.add_comp(AutoComp('manhattan'))

@@ -29,6 +29,7 @@ class Player:
                                  sprites[0].get_height()))
         entity.add_comp(VelocityAttenuateFlag())
         entity.add_comp(CollideFlag())
+        entity.add_comp(MemoryComp())
 
 
 MoveOption = namedtuple('MoveOption', ['prompt', 'description', 'move_init'])

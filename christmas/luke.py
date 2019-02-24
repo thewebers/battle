@@ -55,6 +55,6 @@ class Lucas:
         Player.init(entity, x, y, pos_bounds, Lucas.SPRITES,
                     Lucas.NAME, Lucas.QUOTES, Lucas.MOVES,
                     Lucas.MUG_SPRITES)
-        entity.add_comp(TopPlayerFlag())
+        entity.add_comp(TopPlayerComp())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(LucasFlag())

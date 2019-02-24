@@ -131,8 +131,7 @@ class Game:
         ornament_job_entity = self.create_entity()
         ornament_job_entity.add_comp(JobScheduleComp('spawn_orn', 30000, 2000))
         beer_job_entity = self.create_entity()
-        beer_job_entity.add_comp(JobScheduleComp('spawn_beer', 60000,
-                                                     10000))
+        beer_job_entity.add_comp(JobScheduleComp('spawn_beer', 60000, 10000))
 
         # Initialize snowglobe.
         self.globe = SnowGlobe(self.width, self.height, self.create_entity, \
@@ -188,14 +187,14 @@ class Game:
         PADDING = 5
         pos_bounds = player.get_comp(PositionBoundComp)
         draw_color = Game.FG_COLOR
-        if player.has_comp(TopPlayerFlag):
+        if player.has_comp(TopPlayerComp):
             pos_args = [
                 lambda _: { 'bottomright': (pos_bounds.w - PADDING, \
                                             pos_bounds.h - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
                 lambda rect: { 'bottomright': (rect.right, rect.top - PADDING) },
             ]
-        elif player.has_comp(BottomPlayerFlag):
+        elif player.has_comp(BottomPlayerComp):
             pos_args = [
                 lambda _: { 'topright': (pos_bounds.w - PADDING, pos_bounds.y + PADDING) },
                 lambda rect: { 'topright': (rect.right, rect.bottom + PADDING) },

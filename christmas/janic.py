@@ -61,6 +61,6 @@ class Janicolous:
         Player.init(entity, x, y, pos_bounds, Janicolous.SPRITES,
                     Janicolous.NAME, Janicolous.QUOTES, Janicolous.MOVES,
                     Janicolous.MUG_SPRITES)
-        entity.add_comp(TopPlayerFlag())
+        entity.add_comp(TopPlayerComp())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(JanicolousFlag())

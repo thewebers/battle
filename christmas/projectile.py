@@ -43,12 +43,10 @@ class BotProjectile(Projectile):
     @staticmethod
     def init(entity, name, owner, x, y, xv, yv, sprites, lifetime, speed):
         Projectile.init(entity, owner, x, y, xv, yv, sprites, lifetime)
-        entity.add_comp(PlayerComp(name, None, None, sprites, True))
+        entity.add_comp(PlayerComp(name, None, None, sprites))
         entity.add_comp(AnimateComp(BotProjectile.ANIM_DELAY))
-        entity.add_comp(MemoryComp({
-            'update_rate': BotProjectile.UPDATE_RATE,
-            'speed': speed
-        }))
+        entity.add_comp(AutoComp('manhattan'))
+        entity.add_comp(MemoryComp())
 
 
 class CoalProjectile:

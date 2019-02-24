@@ -3,6 +3,8 @@ from collections import deque, namedtuple
 import numpy as np
 import pygame as pg
 
+from .auto import *
+
 
 # Components with Data
 
@@ -39,7 +41,7 @@ class PlayerComp:
     MAX_POWER = 10
     MAX_DRUNKENNESS = 10
 
-    def __init__(self, name, quotes, moves, mug_sprites, autonomous=False):
+    def __init__(self, name, quotes, moves, mug_sprites):
         self.curr_health = PlayerComp.MAX_HEALTH
         self.max_health = PlayerComp.MAX_HEALTH
         self.curr_power = 0
@@ -50,7 +52,6 @@ class PlayerComp:
         self.quotes = quotes
         self.moves = moves
         self.mug_sprites = mug_sprites
-        self.autonomous = autonomous
         self.opponent_name = None
 
 class PositionBoundComp(pg.Rect): pass
@@ -95,6 +96,24 @@ ItemComp = namedtuple('ItemTypeComp', [])
 
 ParticleSourceComp = namedtuple('DrunkComp', ['type', 'intensity'])
 
+class AutoComp:
+    MODELS = {'rl': ReinforceAuto, 'manhattan': ManhattanAuto}
+    def __init__(self, alias):
+        assert alias in AutoComp.MODELS
+        self.alias = alias
+        self.model = AutoComp.MODELS[self.alias]()
+
+# TODO: See if below comps are necessary.
+
+class TopPlayerComp:
+    def __init__(self, auto=False):
+        self.auto = auto
+
+class BottomPlayerComp:
+    def __init__(self, auto=False):
+        self.auto = auto
+
+
 
 # Flags
 
@@ -117,10 +136,6 @@ class JoshuaFlag: pass
 class JanicolousFlag: pass
 
 class SantaFlag: pass
-
-class TopPlayerFlag: pass
-
-class BottomPlayerFlag: pass
 
 class VelocityAttenuateFlag: pass
 

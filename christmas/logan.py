@@ -53,6 +53,6 @@ class Logan:
         Player.init(entity, x, y, pos_bounds, Logan.SPRITES,
                     Logan.NAME, Logan.QUOTES, Logan.MOVES,
                     Logan.MUG_SPRITES)
-        entity.add_comp(TopPlayerFlag())
+        entity.add_comp(TopPlayerComp())
         entity.add_comp(InputConfigComp(TOP_PLAYER_INPUT_CONFIG))
         entity.add_comp(LoganFlag())
