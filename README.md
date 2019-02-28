@@ -2,6 +2,12 @@
 
 ![](/res/img/gameplay.gif)
 
+## TODO
+* More particles for each player, and make bubbles a function of current player's drunk level.
+* Item acquisition system for beer and ornaments.
+* Player selection menu.
+* Music/SFS engine interacting with player moves.
+
 ## Benjamin
 
 - THE BAD CHAD: "Benjamin finna huck a 1997 signed football from Brett Favre at your mouth hole."
